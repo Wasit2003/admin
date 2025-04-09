@@ -44,35 +44,35 @@ export const TransactionList: React.FC<TransactionListProps> = ({
         <TableBody>
           {transactions.map((transaction) => (
             <TableRow
-              key={transaction.id}
+              key={transaction._id}
               onClick={() => onTransactionClick(transaction)}
               sx={{ cursor: 'pointer', '&:hover': { backgroundColor: 'action.hover' } }}
             >
               <TableCell>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span>MongoDB: {transaction.id}</span>
-                    <Tooltip title="Copy MongoDB ID">
+                    <span>MongoDB: {transaction._id}</span>
+                    <Tooltip title="Copy Transaction ID">
                       <IconButton
                         size="small"
                         onClick={(e) => {
                           e.stopPropagation();
-                          copyToClipboard(transaction.id);
+                          copyToClipboard(transaction._id);
                         }}
                       >
                         <ContentCopyIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
                   </div>
-                  {transaction.clientUuid && (
+                  {transaction.userId && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span>Client: {transaction.clientUuid}</span>
-                      <Tooltip title="Copy Client UUID">
+                      <span>User ID: {transaction.userId}</span>
+                      <Tooltip title="Copy User ID">
                         <IconButton
                           size="small"
                           onClick={(e) => {
                             e.stopPropagation();
-                            copyToClipboard(transaction.clientUuid);
+                            copyToClipboard(transaction.userId);
                           }}
                         >
                           <ContentCopyIcon fontSize="small" />
