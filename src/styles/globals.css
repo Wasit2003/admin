@@ -2,15 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Light mode variables */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --card-bg: #f9fafb;
+  --card-border: #e5e7eb;
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+}
+
+/* Dark mode variables - Updated with darker colors */
+.dark {
+  --background: #121212; /* Very dark gray, almost black */
+  --foreground: #f9fafb;
+  --card-bg: #1a1a1a; /* Dark gray for cards */
+  --card-border: #2a2a2a;
+  --input-bg: #1a1a1a;
+  --input-border: #333333;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not(.light) {
+    --background: #121212; /* Very dark gray, almost black */
+    --foreground: #f9fafb;
+    --card-bg: #1a1a1a; /* Dark gray for cards */
+    --card-border: #2a2a2a;
+    --input-bg: #1a1a1a;
+    --input-border: #333333;
   }
 }
 
@@ -18,4 +37,30 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Common component styles with dark mode support */
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+input, select, textarea {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--foreground);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.animate-shake {
+  animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
 }
