@@ -41,7 +41,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
       setUser(response.data);
       setIsAuthenticated(true);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Auth check failed:', error);
       logout();
     }
@@ -62,9 +62,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
       } else {
         throw new Error('No token received');
       }
-    } catch (error) {
-      console.error('Login error:', error.response?.data || error.message || error);
-      throw new Error(error.response?.data?.message || 'Invalid credentials');
+    } catch (error: unknown) {
+      // Type assertion for error object
+      const errorMessage = 
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message || 
+        (error as Error)?.message || 
+        'Unknown error occurred';
+      
+      console.error('Login error:', errorMessage);
+      throw new Error(errorMessage === 'Unknown error occurred' ? 'Invalid credentials' : errorMessage);
     }
   };
 
