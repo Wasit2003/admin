@@ -6,10 +6,15 @@ interface AdminUser {
   role: 'ADMIN' | 'SUPER_ADMIN';
 }
 
+interface LoginResponse {
+  token: string;
+  user: AdminUser;
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
   user: AdminUser | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<LoginResponse | void>;
   logout: () => void;
 }
 
