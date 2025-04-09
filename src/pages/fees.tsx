@@ -2,6 +2,12 @@ import React, { useState, useEffect, ChangeEvent } from 'react';
 import { ProtectedRoute } from '../components/common/ProtectedRoute';
 import axios from 'axios';
 
+interface FeeSettings {
+  transferFee: number;
+  withdrawalFee: number;
+  minimumAmount: number;
+}
+
 export default function Fees() {
   const [networkFee, setNetworkFee] = useState('');
   const [exchangeRate, setExchangeRate] = useState('');
@@ -10,6 +16,11 @@ export default function Fees() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [debugInfo, setDebugInfo] = useState<any>(null);
+  const [settings, setSettings] = useState<FeeSettings>({
+    transferFee: 0,
+    withdrawalFee: 0,
+    minimumAmount: 0
+  });
 
   // Set up axios with authentication
   const setupAxiosAuth = () => {
@@ -25,11 +36,6 @@ export default function Fees() {
     }
     return {};
   };
-
-  useEffect(() => {
-    // Fetch initial settings
-    fetchSettings();
-  }, []);
 
   const fetchSettings = async () => {
     try {
@@ -60,6 +66,7 @@ export default function Fees() {
         
         setNetworkFee(networkFeePercentage.toString());
         setExchangeRate(exchangeRate.toString());
+        setSettings(response.data.settings);
       }
     } catch (err: any) {
       console.error('❌ DEBUG: Error fetching settings:', err);
@@ -83,6 +90,10 @@ export default function Fees() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
 
   const handleSave = async () => {
     try {

@@ -426,7 +426,6 @@ export const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = (
   const userName = getUserName();
   const userPhone = getUserPhone();
   const userLocation = getUserLocation();
-  const walletAddress = getWalletAddress();
   
   // Handle remittance number change
   const handleRemittanceNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -511,6 +510,10 @@ export const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = (
       }
     }
   }, [transaction]);
+
+  useEffect(() => {
+    getWalletAddress();
+  }, [getWalletAddress]);
   
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-auto">

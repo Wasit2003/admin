@@ -3,7 +3,6 @@ import { ProtectedRoute } from '../components/common/ProtectedRoute';
 import { ReceiptViewer } from '../components/common/ReceiptViewer';
 import { TransactionDetailsModal } from '../components/common/TransactionDetailsModal';
 import api from '../services/api';
-import axios from 'axios';
 
 interface Transaction {
   _id: string;
@@ -36,7 +35,6 @@ export default function TransactionsPage() {
   const [transactionType, setTransactionType] = useState<'ALL' | 'BUY' | 'WITHDRAW'>('ALL');
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState('');
 
   const fetchTransactions = async () => {
     setIsLoading(true);
@@ -416,7 +414,6 @@ export default function TransactionsPage() {
           transaction={selectedTransaction}
           onClose={() => {
             setSelectedTransaction(null);
-            setRejectionReason('');
           }}
           onApprove={
             selectedTransaction.status === 'PENDING'

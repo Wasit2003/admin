@@ -54,7 +54,6 @@ export default function PublicAddressesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'view' | 'add'>('view'); // Default to 'view'
-  const [users, setUsers] = useState<User[]>([]);
   const [newAddress, setNewAddress] = useState('');
   const [generatedAddresses, setGeneratedAddresses] = useState<GeneratedAddress[]>([]);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -107,15 +106,6 @@ export default function PublicAddressesPage() {
       setLocalStorageItem(STORAGE_KEYS.ADDRESSES, JSON.stringify(addresses));
     }
   }, [addresses, isLoading]);
-
-  const fetchUsers = async () => {
-    try {
-      const response = await api.get('/admin/users');
-      setUsers(response.data);
-    } catch (err) {
-      console.error('Error fetching users:', err);
-    }
-  };
 
   const fetchAddresses = async () => {
     try {
@@ -296,7 +286,7 @@ export default function PublicAddressesPage() {
   };
 
   useEffect(() => {
-    fetchUsers().then(() => fetchAddresses());
+    fetchAddresses();
   }, []);
 
   return (
