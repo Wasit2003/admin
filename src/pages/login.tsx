@@ -19,9 +19,9 @@ export default function Login() {
     try {
       await login(email, password);
       router.push('/dashboard');
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Login error:', error);
-      const errorMessage = error.message === 'Invalid credentials' 
+      const errorMessage = (error as Error)?.message === 'Invalid credentials' 
         ? 'Incorrect email or password. Please try again.'
         : 'An error occurred while logging in. Please try again later.';
       setError(errorMessage);
