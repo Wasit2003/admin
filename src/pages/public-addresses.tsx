@@ -2,14 +2,6 @@ import { useEffect, useState } from 'react';
 import { ProtectedRoute } from '../components/common/ProtectedRoute';
 import api from '../services/api';
 
-interface User {
-  _id: string;
-  phoneNumber: string;
-  name?: string;
-  walletAddress?: string;
-  createdAt: string;
-}
-
 interface PublicAddress {
   _id: string;
   userId: string;

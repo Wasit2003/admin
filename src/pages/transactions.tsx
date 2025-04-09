@@ -14,6 +14,7 @@ interface Transaction {
   txHash?: string;
   fromAddress?: string;
   toAddress?: string;
+  receipt?: string;
   customerDetails: {
     name: string;
     phone: string;
@@ -108,7 +109,7 @@ export default function TransactionsPage() {
     .filter((transaction) => transactionType === 'ALL' || transaction.type === transactionType);
 
   const handleViewReceipt = (transaction: Transaction) => {
-    let receiptUrl = transaction.metadata?.receiptUrl || null;
+    const receiptUrl = `${process.env.NEXT_PUBLIC_API_URL}/uploads/${transaction.receipt}`;
     
     // Log for debugging
     console.log('Original Receipt URL:', receiptUrl);

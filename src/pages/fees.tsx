@@ -15,7 +15,7 @@ export default function Fees() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [debugInfo, setDebugInfo] = useState<any>(null);
+  const [debugInfo, setDebugInfo] = useState<Record<string, unknown> | null>(null);
   const [settings, setSettings] = useState<FeeSettings>({
     transferFee: 0,
     withdrawalFee: 0,
@@ -68,24 +68,24 @@ export default function Fees() {
         setExchangeRate(exchangeRate.toString());
         setSettings(response.data.settings);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('❌ DEBUG: Error fetching settings:', err);
       
       // Enhanced error logging
       const errorInfo = {
-        message: err.message,
-        status: err.response?.status,
-        statusText: err.response?.statusText,
-        url: err.config?.url,
-        method: err.config?.method,
-        headers: err.config?.headers,
-        responseData: err.response?.data
+        message: (err as Error)?.message,
+        status: (err as { response?: { status: number } })?.response?.status,
+        statusText: (err as { response?: { statusText: string } })?.response?.statusText,
+        url: (err as { config?: { url: string } })?.config?.url,
+        method: (err as { config?: { method: string } })?.config?.method,
+        headers: (err as { config?: { headers: Record<string, string> } })?.config?.headers,
+        responseData: (err as { response?: { data: unknown } })?.response?.data
       };
       
       console.error('❌ DEBUG: Detailed error:', errorInfo);
       setDebugInfo(errorInfo);
       
-      setError(`Failed to load settings: ${err.message}. Status: ${err.response?.status || 'unknown'}`);
+      setError(`Failed to load settings: ${(err as Error)?.message || 'unknown error'}`);
     } finally {
       setIsLoading(false);
     }
@@ -145,24 +145,24 @@ export default function Fees() {
       } else {
         setError('Failed to save settings');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('❌ DEBUG: Error saving settings:', err);
       
       // Enhanced error logging
       const errorInfo = {
-        message: err.message,
-        status: err.response?.status,
-        statusText: err.response?.statusText,
-        url: err.config?.url,
-        method: err.config?.method,
-        headers: err.config?.headers,
-        responseData: err.response?.data
+        message: (err as Error)?.message,
+        status: (err as { response?: { status: number } })?.response?.status,
+        statusText: (err as { response?: { statusText: string } })?.response?.statusText,
+        url: (err as { config?: { url: string } })?.config?.url,
+        method: (err as { config?: { method: string } })?.config?.method,
+        headers: (err as { config?: { headers: Record<string, string> } })?.config?.headers,
+        responseData: (err as { response?: { data: unknown } })?.response?.data
       };
       
       console.error('❌ DEBUG: Detailed save error:', errorInfo);
       setDebugInfo(errorInfo);
       
-      setError(`Failed to save settings: ${err.message}. Status: ${err.response?.status || 'unknown'}`);
+      setError(`Failed to save settings: ${(err as Error)?.message || 'unknown error'}`);
     } finally {
       setIsSaving(false);
     }
@@ -184,6 +184,8 @@ export default function Fees() {
       setNetworkFee(inputValue);
     }
   };
+
+  console.log('Current settings:', settings);
 
   return (
     <ProtectedRoute>
