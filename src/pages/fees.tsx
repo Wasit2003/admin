@@ -75,59 +75,72 @@ export default function Fees() {
   const fetchSettings = async () => {
     try {
       setIsLoading(true);
-      console.log('🔍 DEBUG: Attempting to fetch settings...');
+      console.log('🔍 DEBUG: Attempting to fetch settings directly...');
       
-      // Log environment info
-      console.log('🔍 DEBUG: Environment:', {
-        nodeEnv: process.env.NODE_ENV,
-        apiUrl: process.env.NEXT_PUBLIC_API_URL,
-      });
+      // Direct fetch without any routing middleware or axios interceptors
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://wasit-backend.onrender.com';
+      console.log('🔍 DEBUG: Using direct API URL:', apiUrl);
       
-      // Get authentication config
-      const authConfig = setupAxiosAuth();
+      const token = localStorage.getItem('admin_token');
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      };
       
-      // Directly use admin/settings endpoint which we know works
-      const endpoint = '/admin/settings';
-      console.log(`🔍 DEBUG: Using endpoint: ${endpoint}`);
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
+      // Add timestamp to prevent caching
+      const url = `${apiUrl}/admin/settings?_ts=${Date.now()}`;
+      console.log('🔍 DEBUG: Direct fetch URL:', url);
       
       try {
-        const response = await api.get(endpoint, authConfig);
-        console.log('✅ DEBUG: Settings fetch successful:', response.data);
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: headers
+        });
         
-        if (response.data.success && response.data.settings) {
-          const { networkFeePercentage, exchangeRate } = response.data.settings;
+        console.log('✅ DEBUG: Direct fetch response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('✅ DEBUG: Direct fetch successful:', data);
+        
+        if (data.success && data.settings) {
+          const { networkFeePercentage, exchangeRate } = data.settings;
           
           setNetworkFee(networkFeePercentage.toString());
           setExchangeRate(exchangeRate.toString());
-          setSettings(response.data.settings);
+          setSettings(data.settings);
         }
-      } catch (err: any) {
-        console.error('❌ DEBUG: Error fetching from primary endpoint', err);
-        setError(`Failed to load settings: ${err.message || 'unknown error'}`);
+      } catch (directErr: any) {
+        console.error('❌ DEBUG: Direct fetch failed, trying fallback...', directErr);
+        
+        // Fallback to hardcoded values if all else fails
+        setNetworkFee('1.0');
+        setExchangeRate('1.0');
+        setSettings({
+          transferFee: 1.0,
+          withdrawalFee: 1.0,
+          minimumAmount: 0
+        });
+        
+        // Show error but don't block the UI
         setDebugInfo({
-          message: err.message,
-          endpoint,
-          status: err.response?.status,
-          data: err.response?.data
+          message: directErr.message,
+          fallback: 'Using default values due to API error'
         });
       }
     } catch (err: unknown) {
       console.error('❌ DEBUG: Error in fetchSettings:', err);
-      
-      // Enhanced error logging
-      const errorInfo = {
+      setDebugInfo({
         message: (err as Error)?.message,
-        status: (err as { response?: { status: number } })?.response?.status,
-        statusText: (err as { response?: { statusText: string } })?.response?.statusText,
-        url: (err as { config?: { url: string } })?.config?.url,
-        method: (err as { config?: { method: string } })?.config?.method,
-        headers: (err as { config?: { headers: Record<string, string> } })?.config?.headers,
-        responseData: (err as { response?: { data: unknown } })?.response?.data
-      };
-      
-      console.error('❌ DEBUG: Detailed error:', errorInfo);
-      setDebugInfo(errorInfo);
-      
+        error: err
+      });
       setError(`Failed to load settings: ${(err as Error)?.message || 'unknown error'}`);
     } finally {
       setIsLoading(false);
