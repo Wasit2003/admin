@@ -92,7 +92,7 @@ export default function Fees() {
       }
       
       // Add timestamp to prevent caching
-      const url = `${apiUrl}/admin/settings?_ts=${Date.now()}`;
+      const url = `${apiUrl}/api/admin/settings?_ts=${Date.now()}`;
       console.log('🔍 DEBUG: Direct fetch URL:', url);
       
       try {
@@ -277,7 +277,7 @@ export default function Fees() {
                         setConnectionStatus('checking');
                         try {
                           // Try direct API endpoint
-                          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/settings`);
+                          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/settings`);
                           console.log('Direct fetch result:', response.status);
                           if (response.ok) {
                             alert(`Direct connection successful! Status: ${response.status}`);

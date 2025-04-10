@@ -46,8 +46,13 @@ api.interceptors.request.use(
     
     // Ensure URL has the correct format
     if (config.url && !config.url.startsWith('/api/') && !config.url.startsWith('http')) {
+      // Special handling for settings endpoint which has direct handlers
+      if (config.url === '/admin/settings' || config.url === '/settings') {
+        console.log('🔧 Converting settings URL to use direct handler path');
+        config.url = '/api/admin/settings';
+      } 
       // Convert non-absolute URLs that don't start with /api/
-      if (config.url.startsWith('/admin/')) {
+      else if (config.url.startsWith('/admin/')) {
         config.url = config.url.replace('/admin/', '/api/admin/');
       } else if (!config.url.includes('/admin/')) {
         // Add /api/ prefix to any other URLs that don't have it
@@ -123,9 +128,9 @@ api.testConnection = async () => {
   try {
     console.log('🔍 Testing connection to backend...');
     
-    // Try direct endpoint without api prefix
-    const endpoint = '/admin/debug-settings';
-    console.log(`🔍 Using direct endpoint: ${endpoint}`);
+    // Try direct endpoint with proper api prefix
+    const endpoint = '/api/admin/settings';
+    console.log(`🔍 Using endpoint: ${endpoint}`);
     
     const response = await api.get(endpoint);
     console.log('✅ Connection test successful:', response.data);
