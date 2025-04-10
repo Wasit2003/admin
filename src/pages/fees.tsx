@@ -329,9 +329,9 @@ export default function Fees() {
                           } else {
                             alert(`Connection failed! Status: ${response.status}`);
                           }
-                        } catch (error) {
-                          console.error('Local API connection error:', error);
-                          alert(`Connection error: ${(error as Error).message}`);
+                        } catch (connectionTestError) {
+                          console.error('Local API connection error:', connectionTestError);
+                          alert(`Connection error: ${(connectionTestError as Error).message}`);
                         } finally {
                           // Retry connection test
                           const checkConnection = async () => {
@@ -342,8 +342,9 @@ export default function Fees() {
                               } else {
                                 setConnectionStatus('error');
                               }
-                            } catch (error) {
+                            } catch (connectionError) {
                               setConnectionStatus('error');
+                              console.error('Connection retry failed:', connectionError);
                             }
                           };
                           
