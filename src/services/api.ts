@@ -47,6 +47,7 @@ const logRequest = (config: AxiosRequestConfig) => {
   if (config.data) {
     try {
       console.log('Body:', typeof config.data === 'string' ? JSON.parse(config.data) : config.data);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_) {
       // Ignore parsing errors, just log the raw data
       console.log('Body:', config.data);
