@@ -8,15 +8,25 @@ const nextConfig = {
   async rewrites() {
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://wasit-backend.onrender.com';
     return [
-      // For /api/* routes - proxy to the backend server
+      // Direct request to /api/admin/settings to backend's /admin/settings endpoint
+      {
+        source: '/api/admin/settings',
+        destination: `${backendUrl}/admin/settings`,
+      },
+      // Direct request to /api/admin/debug-settings to backend's /admin/debug-settings endpoint
+      {
+        source: '/api/admin/debug-settings',
+        destination: `${backendUrl}/admin/debug-settings`,
+      },
+      // For all other /api/* routes - proxy to the backend server
       {
         source: '/api/:path*',
         destination: `${backendUrl}/api/:path*`,
       },
-      // For /admin/api/* routes - proxy to the backend server
+      // For /admin/* routes - proxy to the backend server's admin routes
       {
-        source: '/admin/api/:path*',
-        destination: `${backendUrl}/admin/api/:path*`,
+        source: '/admin/:path*',
+        destination: `${backendUrl}/admin/:path*`,
       },
     ];
   },

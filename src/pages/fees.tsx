@@ -86,9 +86,12 @@ export default function Fees() {
       // Get authentication config
       const authConfig = setupAxiosAuth();
       
-      // First try with direct /api/admin/settings path
+      // Directly use admin/settings endpoint which we know works
+      const endpoint = '/admin/settings';
+      console.log(`🔍 DEBUG: Using endpoint: ${endpoint}`);
+      
       try {
-        const response = await api.get('/api/admin/settings', authConfig);
+        const response = await api.get(endpoint, authConfig);
         console.log('✅ DEBUG: Settings fetch successful:', response.data);
         
         if (response.data.success && response.data.settings) {
@@ -99,22 +102,17 @@ export default function Fees() {
           setSettings(response.data.settings);
         }
       } catch (err: any) {
-        console.warn('⚠️ First attempt failed, trying fallback path');
-        
-        // Fallback to /admin/settings if the first try fails
-        const fallbackResponse = await api.get('/admin/settings', authConfig);
-        console.log('✅ DEBUG: Fallback settings fetch successful:', fallbackResponse.data);
-        
-        if (fallbackResponse.data.success && fallbackResponse.data.settings) {
-          const { networkFeePercentage, exchangeRate } = fallbackResponse.data.settings;
-          
-          setNetworkFee(networkFeePercentage.toString());
-          setExchangeRate(exchangeRate.toString());
-          setSettings(fallbackResponse.data.settings);
-        }
+        console.error('❌ DEBUG: Error fetching from primary endpoint', err);
+        setError(`Failed to load settings: ${err.message || 'unknown error'}`);
+        setDebugInfo({
+          message: err.message,
+          endpoint,
+          status: err.response?.status,
+          data: err.response?.data
+        });
       }
     } catch (err: unknown) {
-      console.error('❌ DEBUG: Error fetching settings:', err);
+      console.error('❌ DEBUG: Error in fetchSettings:', err);
       
       // Enhanced error logging
       const errorInfo = {
@@ -243,18 +241,70 @@ export default function Fees() {
             
             {connectionStatus === 'error' && (
               <div className="bg-red-50 dark:bg-red-900/20 p-4 mb-4 rounded-md">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                    </svg>
+                <div className="flex flex-col">
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <h3 className="text-sm font-medium text-red-800 dark:text-red-300">
+                        Error connecting to backend server
+                      </h3>
+                      <div className="mt-2 text-sm text-red-700 dark:text-red-400">
+                        <p>Please check your connection or contact support. The backend server might be unavailable.</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="ml-3">
-                    <h3 className="text-sm font-medium text-red-800 dark:text-red-300">
-                      Error connecting to backend server
-                    </h3>
-                    <div className="mt-2 text-sm text-red-700 dark:text-red-400">
-                      <p>Please check your connection or contact support. The backend server might be unavailable.</p>
+                  
+                  <div className="mt-4 flex flex-col gap-2">
+                    <button 
+                      onClick={async () => {
+                        setConnectionStatus('checking');
+                        try {
+                          // Try direct API endpoint
+                          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/settings`);
+                          console.log('Direct fetch result:', response.status);
+                          if (response.ok) {
+                            alert(`Direct connection successful! Status: ${response.status}`);
+                          } else {
+                            alert(`Direct connection failed! Status: ${response.status}`);
+                          }
+                        } catch (err) {
+                          console.error('Direct fetch error:', err);
+                          alert(`Direct connection error: ${(err as Error).message}`);
+                        } finally {
+                          // Retry connection test
+                          const checkConnection = async () => {
+                            try {
+                              const result = await api.testConnection();
+                              if (result.success) {
+                                setConnectionStatus('connected');
+                                setConnectionDetails(result.data);
+                              } else {
+                                setConnectionStatus('error');
+                                setConnectionDetails(result.error);
+                              }
+                            } catch (error) {
+                              setConnectionStatus('error');
+                              setConnectionDetails(error);
+                            }
+                          };
+                          
+                          checkConnection();
+                        }
+                      }}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      Test Direct Connection
+                    </button>
+                    
+                    <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs">
+                      <p className="font-bold">Debug Information:</p>
+                      <p>Environment: {process.env.NODE_ENV}</p>
+                      <p>API URL: {process.env.NEXT_PUBLIC_API_URL || 'Not defined'}</p>
+                      <p>Connection Status: {connectionStatus}</p>
                     </div>
                   </div>
                 </div>

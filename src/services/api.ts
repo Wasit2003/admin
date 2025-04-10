@@ -122,7 +122,12 @@ api.interceptors.response.use(
 api.testConnection = async () => {
   try {
     console.log('🔍 Testing connection to backend...');
-    const response = await api.get('/api/admin/debug-settings');
+    
+    // Try direct endpoint without api prefix
+    const endpoint = '/admin/debug-settings';
+    console.log(`🔍 Using direct endpoint: ${endpoint}`);
+    
+    const response = await api.get(endpoint);
     console.log('✅ Connection test successful:', response.data);
     return {
       success: true,
@@ -130,10 +135,27 @@ api.testConnection = async () => {
     };
   } catch (error) {
     console.error('❌ Connection test failed:', error);
-    return {
-      success: false,
-      error
-    };
+    
+    // Try alternative URLs if the main one fails
+    try {
+      console.log('🔍 Attempting alternative connection test...');
+      
+      // First check if server is reachable at all with a simple HEAD request
+      const baseUrl = api.defaults.baseURL || '';
+      await fetch(`${baseUrl}`, { method: 'HEAD' });
+      
+      return {
+        success: false,
+        error,
+        message: 'Backend is reachable but API endpoint not found. Check API routes.'
+      };
+    } catch (fetchError) {
+      return {
+        success: false,
+        error,
+        message: 'Backend server appears to be completely unreachable.'
+      };
+    }
   }
 };
 
