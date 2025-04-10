@@ -40,10 +40,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
         
         console.log('Token retrieved:', token);
         
-        const response = await api.get('/admin/me');
-        console.log('Auth check response:', response.data);
+        // Use local API proxy instead of direct backend call
+        const response = await fetch('/api/admin/me', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
         
-        setUser(response.data);
+        if (!response.ok) {
+          throw new Error('Authentication check failed');
+        }
+        
+        const data = await response.json();
+        console.log('Auth check response:', data);
+        
+        setUser(data);
         setIsAuthenticated(true);
       } catch (error: unknown) {
         console.error('Auth check failed:', error);
@@ -52,20 +65,36 @@ export function AuthProvider({ children }: AuthProviderProps) {
     };
     
     checkAuthStatus();
-  }, [logout]);  // Add logout as a dependency
+  }, [logout]);
 
   const login = async (email: string, password: string) => {
     try {
       console.log('Attempting login with:', { email });
-      const response = await api.post<LoginResponse>('/admin/login', { email, password });
-      console.log('Login response:', response.data);
       
-      if (response.data.token) {
-        localStorage.setItem('admin_token', response.data.token);
-        setUser(response.data.user);
+      // Use local API proxy instead of direct backend call
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Login failed:', errorData);
+        throw new Error(errorData.message || 'Invalid credentials');
+      }
+      
+      const data = await response.json();
+      console.log('Login response success:', !!data.token);
+      
+      if (data.token) {
+        localStorage.setItem('admin_token', data.token);
+        setUser(data.user);
         setIsAuthenticated(true);
         router.push('/dashboard');
-        return response.data;
+        return data;
       } else {
         throw new Error('No token received');
       }
