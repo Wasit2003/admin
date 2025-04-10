@@ -1,5 +1,6 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { ProtectedRoute } from '../components/common/ProtectedRoute';
+import axios from 'axios';
 import api from '../services/api';
 
 interface FeeSettings {
@@ -22,16 +23,35 @@ export default function Fees() {
     minimumAmount: 0
   });
 
+  // Set up axios with authentication
+  const setupAxiosAuth = () => {
+    const token = localStorage.getItem('admin_token');
+    console.log('🔑 DEBUG: Token available:', !!token);
+    
+    if (token) {
+      return {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+    }
+    return {};
+  };
+
   const fetchSettings = async () => {
     try {
       setIsLoading(true);
       console.log('🔍 DEBUG: Attempting to fetch settings...');
       
-      // Log the full URL we're trying to access
-      const endpoint = '/admin/settings';
-      console.log('🔍 DEBUG: Request URL:', endpoint);
+      // Log the API URL we're using
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+      console.log('🔍 DEBUG: API URL from env:', apiUrl);
       
-      const response = await api.get(endpoint);
+      // Get authentication config
+      const authConfig = setupAxiosAuth();
+      
+      // Use the api client instead of direct axios
+      const response = await api.get('/admin/settings', authConfig);
       
       console.log('✅ DEBUG: Settings fetch successful:', response.data);
       
@@ -52,6 +72,8 @@ export default function Fees() {
         statusText: (err as { response?: { statusText: string } })?.response?.statusText,
         url: (err as { config?: { url: string } })?.config?.url,
         method: (err as { config?: { method: string } })?.config?.method,
+        headers: (err as { config?: { headers: Record<string, string> } })?.config?.headers,
+        responseData: (err as { response?: { data: unknown } })?.response?.data
       };
       
       console.error('❌ DEBUG: Detailed error:', errorInfo);
@@ -96,11 +118,14 @@ export default function Fees() {
         exchangeRate: exchangeRateValue
       });
       
-      // Save to API
+      // Get authentication config
+      const authConfig = setupAxiosAuth();
+      
+      // Use the api client instead of direct axios
       const response = await api.put('/admin/settings', {
         networkFeePercentage: networkFeeValue,
         exchangeRate: exchangeRateValue
-      });
+      }, authConfig);
       
       console.log('✅ DEBUG: Settings save response:', response.data);
       
@@ -124,6 +149,8 @@ export default function Fees() {
         statusText: (err as { response?: { statusText: string } })?.response?.statusText,
         url: (err as { config?: { url: string } })?.config?.url,
         method: (err as { config?: { method: string } })?.config?.method,
+        headers: (err as { config?: { headers: Record<string, string> } })?.config?.headers,
+        responseData: (err as { response?: { data: unknown } })?.response?.data
       };
       
       console.error('❌ DEBUG: Detailed save error:', errorInfo);
