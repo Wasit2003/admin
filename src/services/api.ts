@@ -127,36 +127,139 @@ api.interceptors.response.use(
 api.testConnection = async () => {
   try {
     console.log('🔍 Testing connection to backend...');
+    console.log('🌐 Browser online status:', navigator.onLine ? 'Online' : 'Offline');
+    console.log('🌐 Environment:', process.env.NODE_ENV);
+    console.log('🌐 Origin:', window.location.origin);
+    console.log('🌐 API URL from env:', process.env.NEXT_PUBLIC_API_URL || 'Not set');
     
     // Try local API endpoint
     const endpoint = '/api/admin/settings';
     console.log(`🔍 Using local API endpoint: ${endpoint}`);
     
+    // Get authentication token
+    const token = localStorage.getItem('admin_token');
+    console.log('🔑 Auth token available:', !!token);
+    if (token) {
+      console.log('🔑 Token first 10 chars:', token.substring(0, 10) + '...');
+    }
+    
+    // First try a HEAD request to check basic connectivity
+    try {
+      console.log('🔄 Testing with HEAD request first...');
+      const headResponse = await fetch(endpoint, {
+        method: 'HEAD',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token || ''}`
+        }
+      });
+      console.log('🔄 HEAD response status:', headResponse.status);
+    } catch (headError) {
+      console.error('❌ HEAD request failed:', headError);
+    }
+    
+    // Now try the actual GET request
+    console.log('🔄 Sending main connection test request...');
+    const startTime = Date.now();
     const response = await fetch(endpoint, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('admin_token') || ''}`
+        'Authorization': `Bearer ${token || ''}`
       }
     });
+    const endTime = Date.now();
+    const requestTime = endTime - startTime;
+    
+    console.log(`🔄 Response received in ${requestTime}ms`);
+    console.log('🔄 Response status:', response.status);
+    console.log('🔄 Response status text:', response.statusText);
+    
+    // Capture detailed response info for debugging
+    const responseDetails = {
+      status: response.status,
+      statusText: response.statusText,
+      headers: Object.fromEntries([...response.headers.entries()]),
+      url: response.url,
+      redirected: response.redirected,
+      type: response.type,
+      requestTime: requestTime
+    };
     
     if (!response.ok) {
-      throw new Error(`Connection failed: ${response.status} ${response.statusText}`);
+      console.error('❌ Connection test response not OK:', responseDetails);
+      
+      // Try to read the error body anyway
+      try {
+        const errorData = await response.json();
+        console.error('❌ Error response body:', errorData);
+        
+        throw new Error(`Connection failed: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`);
+      } catch (jsonError) {
+        console.error('❌ Could not parse error response:', jsonError);
+        throw new Error(`Connection failed: ${response.status} ${response.statusText} - Could not parse response`);
+      }
     }
     
+    console.log('🔄 Parsing response JSON...');
     const data = await response.json();
-    console.log('✅ Connection test successful:', data);
+    console.log('✅ Connection test successful, data:', data);
+    
+    // Try a direct ping to the backend as well
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://wasit-backend.onrender.com';
+      console.log(`🔄 Testing direct connection to backend: ${apiUrl}/api/admin/debug-settings`);
+      
+      const directResponse = await fetch(`${apiUrl}/api/admin/debug-settings`, {
+        method: 'HEAD',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token || ''}`
+        }
+      });
+      
+      console.log('🔄 Direct backend response status:', directResponse.status);
+    } catch (directError) {
+      console.error('❌ Direct backend connection test failed:', directError);
+    }
+    
     return {
       success: true,
-      data: data
+      data: data,
+      responseDetails: responseDetails
     };
   } catch (error) {
     console.error('❌ Connection test failed:', error);
+    console.error('❌ Detailed error:', {
+      name: (error as Error).name,
+      message: (error as Error).message,
+      stack: (error as Error).stack
+    });
+    
+    // Try a direct network check
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://wasit-backend.onrender.com';
+      console.log(`🔄 Attempting direct ping to backend domain: ${apiUrl}`);
+      const pingResult = await fetch(apiUrl, { method: 'HEAD', mode: 'no-cors' });
+      console.log('🔄 Direct ping result:', pingResult.type); // Will be 'opaque' for no-cors
+    } catch (pingError) {
+      console.error('❌ Direct ping failed:', pingError);
+    }
     
     return {
       success: false,
-      error,
-      message: 'Failed to connect to API. Check your connection or contact support.'
+      error: {
+        name: (error as Error).name,
+        message: (error as Error).message,
+        stack: (error as Error).stack
+      },
+      message: 'Failed to connect to API. Check your connection or contact support.',
+      environmentInfo: {
+        apiUrl: process.env.NEXT_PUBLIC_API_URL || 'Not set',
+        origin: window.location.origin,
+        nodeEnv: process.env.NODE_ENV,
+        browserOnline: navigator.onLine
+      }
     };
   }
 };

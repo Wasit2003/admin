@@ -9,6 +9,30 @@ interface FeeSettings {
   minimumAmount: number;
 }
 
+// Define type for debug info
+interface DebugInfo {
+  message?: string;
+  error?: any;
+  fallback?: string;
+  status?: number;
+  statusText?: string;
+  url?: string;
+  method?: string;
+  headers?: Record<string, string>;
+  responseDetails?: {
+    status: number;
+    statusText: string;
+    headers: Record<string, string>;
+    url: string;
+    redirected: boolean;
+    type: string;
+    requestTime?: number;
+  };
+  errorBody?: any;
+  data?: any;
+  [key: string]: any; // Allow for additional properties
+}
+
 export default function Fees() {
   const [networkFee, setNetworkFee] = useState('');
   const [exchangeRate, setExchangeRate] = useState('');
@@ -16,7 +40,7 @@ export default function Fees() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [debugInfo, setDebugInfo] = useState<Record<string, unknown> | null>(null);
+  const [debugInfo, setDebugInfo] = useState<DebugInfo | null>(null);
   const [settings, setSettings] = useState<FeeSettings>({
     transferFee: 0,
     withdrawalFee: 0,
@@ -77,6 +101,13 @@ export default function Fees() {
       setIsLoading(true);
       console.log('🔍 DEBUG: Attempting to fetch settings...');
       
+      // Capture environment information
+      console.log('🌐 Runtime ENV:', {
+        nodeEnv: process.env.NODE_ENV,
+        baseUrl: window.location.origin,
+        apiUrl: process.env.NEXT_PUBLIC_API_URL || 'Not set'
+      });
+      
       // Using our local API route that proxies to the backend
       const token = localStorage.getItem('admin_token');
       const headers: Record<string, string> = {
@@ -86,6 +117,9 @@ export default function Fees() {
       
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
+        console.log('🔑 DEBUG: Auth token available (first 10 chars):', token.substring(0, 10) + '...');
+      } else {
+        console.error('❌ DEBUG: No authentication token found!');
       }
       
       // Add timestamp to prevent caching - now use the local API endpoint
@@ -93,29 +127,94 @@ export default function Fees() {
       console.log('🔍 DEBUG: Using local API URL:', localApiUrl);
       
       try {
+        console.log('🔄 DEBUG: Starting fetch request...');
+        
+        // First try a simple HEAD request to check basic connectivity
+        try {
+          console.log('🔄 Testing API endpoint with HEAD request...');
+          const headCheck = await fetch(localApiUrl, {
+            method: 'HEAD',
+            headers: headers
+          });
+          console.log('🔄 HEAD request status:', headCheck.status);
+        } catch (headError) {
+          console.error('❌ DEBUG: HEAD check failed:', headError);
+        }
+        
+        // Perform the actual GET request
+        console.log('🔄 DEBUG: Sending main GET request...');
         const response = await fetch(localApiUrl, {
           method: 'GET',
           headers: headers
         });
         
-        console.log('✅ DEBUG: Fetch response status:', response.status);
+        console.log('✅ DEBUG: Fetch response received');
+        console.log('✅ DEBUG: Response status:', response.status);
+        console.log('✅ DEBUG: Response status text:', response.statusText);
+        console.log('✅ DEBUG: Response type:', response.type);
+        console.log('✅ DEBUG: Response headers:', Object.fromEntries([...response.headers.entries()]));
+        
+        // Capture response details for debugging
+        const responseDetails = {
+          status: response.status,
+          statusText: response.statusText,
+          headers: Object.fromEntries([...response.headers.entries()]),
+          url: response.url,
+          redirected: response.redirected,
+          type: response.type
+        };
         
         if (!response.ok) {
+          console.error('❌ DEBUG: HTTP error occurred:', responseDetails);
+          
+          // Try to read the error body, even on error status
+          let errorBody;
+          try {
+            errorBody = await response.json();
+            console.error('❌ DEBUG: Error response body:', errorBody);
+          } catch (jsonErr) {
+            console.error('❌ DEBUG: Could not parse error response as JSON:', jsonErr);
+          }
+          
+          setDebugInfo({
+            message: `Request failed with status code ${response.status}`,
+            status: response.status,
+            statusText: response.statusText,
+            url: localApiUrl,
+            method: 'GET',
+            headers: headers,
+            responseDetails: responseDetails,
+            errorBody: errorBody || 'Could not parse error body'
+          });
+          
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         
+        console.log('🔄 DEBUG: Parsing response JSON...');
         const data = await response.json();
-        console.log('✅ DEBUG: Fetch successful:', data);
+        console.log('✅ DEBUG: Fetch successful, parsed data:', data);
         
         if (data.success && data.settings) {
           const { networkFeePercentage, exchangeRate } = data.settings;
+          console.log('✅ DEBUG: Extracted settings values:', { networkFeePercentage, exchangeRate });
           
           setNetworkFee(networkFeePercentage.toString());
           setExchangeRate(exchangeRate.toString());
           setSettings(data.settings);
+        } else {
+          console.error('❌ DEBUG: Data structure not as expected:', data);
+          setDebugInfo({
+            message: 'Backend response did not contain expected data structure',
+            data: data
+          });
         }
       } catch (directErr: any) {
         console.error('❌ DEBUG: Local API fetch failed:', directErr);
+        console.error('❌ DEBUG: Error details:', {
+          name: directErr.name,
+          message: directErr.message,
+          stack: directErr.stack
+        });
         
         // Fallback to hardcoded values if all else fails
         setNetworkFee('1.0');
@@ -129,14 +228,23 @@ export default function Fees() {
         // Show error but don't block the UI
         setDebugInfo({
           message: directErr.message,
-          fallback: 'Using default values due to API error'
+          fallback: 'Using default values due to API error',
+          error: {
+            name: directErr.name,
+            message: directErr.message,
+            stack: directErr.stack
+          }
         });
       }
     } catch (err: unknown) {
       console.error('❌ DEBUG: Error in fetchSettings:', err);
       setDebugInfo({
         message: (err as Error)?.message,
-        error: err
+        error: {
+          name: (err as Error)?.name,
+          message: (err as Error)?.message,
+          stack: (err as Error)?.stack
+        }
       });
       setError(`Failed to load settings: ${(err as Error)?.message || 'unknown error'}`);
     } finally {
@@ -337,10 +445,64 @@ export default function Fees() {
                 <div className="space-y-6">
                   {debugInfo && (
                     <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
-                      <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-300">Debug Information</h3>
-                      <pre className="mt-2 text-xs overflow-auto max-h-40 p-2 bg-gray-100 dark:bg-gray-800 rounded">
-                        {JSON.stringify(debugInfo, null, 2)}
-                      </pre>
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-300">Debug Information</h3>
+                        <button 
+                          className="text-xs bg-yellow-100 dark:bg-yellow-800 hover:bg-yellow-200 dark:hover:bg-yellow-700 text-yellow-800 dark:text-yellow-300 px-2 py-1 rounded"
+                          onClick={() => {
+                            console.log('Copying debug info to clipboard:', debugInfo);
+                            navigator.clipboard.writeText(JSON.stringify(debugInfo, null, 2))
+                              .then(() => alert('Debug info copied to clipboard!'))
+                              .catch(err => console.error('Failed to copy:', err));
+                          }}
+                        >
+                          Copy to Clipboard
+                        </button>
+                      </div>
+                      <div className="mt-2 text-sm text-yellow-700 dark:text-yellow-400">
+                        <p className="font-medium">{debugInfo.message || 'An error occurred'}</p>
+                        
+                        {debugInfo.status && (
+                          <div className="mt-2">
+                            <p className="font-medium">Response Status: {debugInfo.status} {debugInfo.statusText}</p>
+                            <p>URL: {debugInfo.url}</p>
+                            <p>Method: {debugInfo.method}</p>
+                          </div>
+                        )}
+                        
+                        {debugInfo.responseDetails && (
+                          <div className="mt-2">
+                            <p className="font-medium">Response Details:</p>
+                            <ul className="list-disc pl-5 mt-1">
+                              <li>Status: {debugInfo.responseDetails.status} {debugInfo.responseDetails.statusText}</li>
+                              <li>URL: {debugInfo.responseDetails.url}</li>
+                              <li>Type: {debugInfo.responseDetails.type}</li>
+                              <li>Redirected: {debugInfo.responseDetails.redirected ? 'Yes' : 'No'}</li>
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="mt-3 overflow-auto">
+                        <div className="flex justify-between items-center mb-1">
+                          <p className="text-xs font-medium text-yellow-800 dark:text-yellow-300">Full Debug Data:</p>
+                          <button 
+                            className="text-xs bg-yellow-100 dark:bg-yellow-800 hover:bg-yellow-200 dark:hover:bg-yellow-700 text-yellow-800 dark:text-yellow-300 px-2 py-1 rounded"
+                            onClick={() => {
+                              const debugEl = document.getElementById('debug-data-collapsed');
+                              if (debugEl) {
+                                debugEl.classList.toggle('max-h-40');
+                                debugEl.classList.toggle('max-h-[500px]');
+                              }
+                            }}
+                          >
+                            Toggle Expand
+                          </button>
+                        </div>
+                        <pre id="debug-data-collapsed" className="text-xs overflow-auto max-h-40 transition-all duration-300 p-2 bg-gray-100 dark:bg-gray-800 rounded">
+                          {JSON.stringify(debugInfo, null, 2)}
+                        </pre>
+                      </div>
                     </div>
                   )}
                   
