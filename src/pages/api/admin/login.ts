@@ -15,7 +15,8 @@ export default async function handler(
   console.log('🔄 LOGIN API PROXY: Request received', {
     method: req.method,
     url: req.url,
-    body: req.body
+    // Don't log sensitive information like passwords
+    body: req.body ? { email: req.body.email, hasPassword: !!req.body.password } : null
   });
 
   // Handle CORS preflight
@@ -31,11 +32,21 @@ export default async function handler(
   
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
+    'Accept': 'application/json'
   };
   
   try {
     // Forward the request to the backend
-    console.log('🔄 Sending login request to backend with body:', req.body);
+    console.log('🔄 Sending login request to backend with email:', req.body?.email);
+    
+    // Check if request body is valid
+    if (!req.body || !req.body.email || !req.body.password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and password are required'
+      });
+    }
+    
     const response = await fetch(targetUrl, {
       method: 'POST',
       headers,
@@ -44,36 +55,52 @@ export default async function handler(
     
     console.log('🔄 Backend login response status:', response.status);
     
-    if (!response.ok) {
-      console.error('❌ Backend returned error status:', response.status);
+    // Get the raw text first, so we can handle non-JSON responses
+    const rawText = await response.text();
+    
+    // Try to parse the response as JSON
+    let responseData;
+    try {
+      responseData = JSON.parse(rawText);
+    } catch (parseError) {
+      console.error('❌ Error parsing response as JSON:', parseError);
+      console.error('❌ Raw response text:', rawText);
       
-      // Try to read the response body even for error responses
-      let errorData;
-      try {
-        errorData = await response.json();
-        console.error('❌ Error response body:', errorData);
-      } catch (jsonError) {
-        console.error('❌ Could not parse error response as JSON:', jsonError);
-        errorData = { message: 'Backend error with unparseable response' };
-      }
-      
-      return res.status(response.status).json({
+      // Return a friendly error message
+      return res.status(502).json({
         success: false,
-        message: errorData.message || 'Login failed',
-        statusCode: response.status,
-        error: errorData
+        message: 'Invalid response from backend server',
+        error: 'The backend returned an invalid JSON response',
+        details: rawText.slice(0, 200) // Include a snippet of the raw response for debugging
       });
     }
     
-    // Get the response data
-    const data = await response.json();
-    console.log('✅ Login response data (token hidden):', {
-      ...data,
-      token: data.token ? '[TOKEN HIDDEN]' : 'no token' 
-    });
+    if (!response.ok) {
+      console.error('❌ Backend returned error status:', response.status);
+      console.error('❌ Error response data:', responseData);
+      
+      return res.status(response.status).json({
+        success: false,
+        message: responseData?.message || 'Login failed',
+        statusCode: response.status,
+        error: responseData
+      });
+    }
+    
+    // Check if response contains a token
+    if (!responseData.token) {
+      console.error('❌ Backend response missing token:', responseData);
+      return res.status(502).json({
+        success: false,
+        message: 'Backend did not provide an authentication token',
+        error: 'Missing token in response'
+      });
+    }
+    
+    console.log('✅ Login response successful with token');
     
     // Return the response with the same status
-    res.status(response.status).json(data);
+    res.status(response.status).json(responseData);
   } catch (error) {
     console.error('❌ Error proxying login to backend:', error);
     
