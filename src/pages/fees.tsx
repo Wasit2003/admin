@@ -22,6 +22,8 @@ export default function Fees() {
     withdrawalFee: 0,
     minimumAmount: 0
   });
+  const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'error'>('checking');
+  const [connectionDetails, setConnectionDetails] = useState<any>(null);
 
   // Set up axios with authentication
   const setupAxiosAuth = () => {
@@ -38,29 +40,78 @@ export default function Fees() {
     return {};
   };
 
+  // Check connection to backend first
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        setConnectionStatus('checking');
+        const result = await api.testConnection();
+        if (result.success) {
+          setConnectionStatus('connected');
+          setConnectionDetails(result.data);
+          console.log('✅ Backend connection verified');
+        } else {
+          setConnectionStatus('error');
+          setConnectionDetails(result.error);
+          console.error('❌ Backend connection failed');
+        }
+      } catch (error) {
+        setConnectionStatus('error');
+        setConnectionDetails(error);
+        console.error('❌ Connection test error:', error);
+      }
+    };
+    
+    checkConnection();
+  }, []);
+
+  // Only fetch settings if connected
+  useEffect(() => {
+    if (connectionStatus === 'connected') {
+      fetchSettings();
+    }
+  }, [connectionStatus]);
+
   const fetchSettings = async () => {
     try {
       setIsLoading(true);
       console.log('🔍 DEBUG: Attempting to fetch settings...');
       
-      // Log the API URL we're using
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-      console.log('🔍 DEBUG: API URL from env:', apiUrl);
+      // Log environment info
+      console.log('🔍 DEBUG: Environment:', {
+        nodeEnv: process.env.NODE_ENV,
+        apiUrl: process.env.NEXT_PUBLIC_API_URL,
+      });
       
       // Get authentication config
       const authConfig = setupAxiosAuth();
       
-      // Use the api client instead of direct axios with the correct path
-      const response = await api.get('/api/admin/settings', authConfig);
-      
-      console.log('✅ DEBUG: Settings fetch successful:', response.data);
-      
-      if (response.data.success && response.data.settings) {
-        const { networkFeePercentage, exchangeRate } = response.data.settings;
+      // First try with direct /api/admin/settings path
+      try {
+        const response = await api.get('/api/admin/settings', authConfig);
+        console.log('✅ DEBUG: Settings fetch successful:', response.data);
         
-        setNetworkFee(networkFeePercentage.toString());
-        setExchangeRate(exchangeRate.toString());
-        setSettings(response.data.settings);
+        if (response.data.success && response.data.settings) {
+          const { networkFeePercentage, exchangeRate } = response.data.settings;
+          
+          setNetworkFee(networkFeePercentage.toString());
+          setExchangeRate(exchangeRate.toString());
+          setSettings(response.data.settings);
+        }
+      } catch (err: any) {
+        console.warn('⚠️ First attempt failed, trying fallback path');
+        
+        // Fallback to /admin/settings if the first try fails
+        const fallbackResponse = await api.get('/admin/settings', authConfig);
+        console.log('✅ DEBUG: Fallback settings fetch successful:', fallbackResponse.data);
+        
+        if (fallbackResponse.data.success && fallbackResponse.data.settings) {
+          const { networkFeePercentage, exchangeRate } = fallbackResponse.data.settings;
+          
+          setNetworkFee(networkFeePercentage.toString());
+          setExchangeRate(exchangeRate.toString());
+          setSettings(fallbackResponse.data.settings);
+        }
       }
     } catch (err: unknown) {
       console.error('❌ DEBUG: Error fetching settings:', err);
@@ -84,10 +135,6 @@ export default function Fees() {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchSettings();
-  }, []);
 
   const handleSave = async () => {
     try {
@@ -188,11 +235,37 @@ export default function Fees() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">Fee Management</h1>
             
-            {isLoading ? (
+            {connectionStatus === 'checking' && (
+              <div className="bg-white dark:bg-[#1a1a1a] shadow rounded-lg p-6 flex justify-center">
+                <div className="animate-pulse">Checking connection to backend...</div>
+              </div>
+            )}
+            
+            {connectionStatus === 'error' && (
+              <div className="bg-red-50 dark:bg-red-900/20 p-4 mb-4 rounded-md">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-red-800 dark:text-red-300">
+                      Error connecting to backend server
+                    </h3>
+                    <div className="mt-2 text-sm text-red-700 dark:text-red-400">
+                      <p>Please check your connection or contact support. The backend server might be unavailable.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {isLoading && connectionStatus === 'connected' ? (
               <div className="bg-white dark:bg-[#1a1a1a] shadow rounded-lg p-6 flex justify-center">
                 <div className="animate-pulse">Loading settings...</div>
               </div>
-            ) : (
+            ) : connectionStatus === 'connected' && (
               <div className="bg-white dark:bg-[#1a1a1a] shadow rounded-lg p-6">
                 <div className="space-y-6">
                   {debugInfo && (
