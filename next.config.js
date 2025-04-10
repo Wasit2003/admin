@@ -5,7 +5,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://127.0.0.1:3000/api/:path*', // Use IPv4 explicitly instead of localhost
+        destination: process.env.NEXT_PUBLIC_API_URL + '/api/:path*',
       },
     ];
   },

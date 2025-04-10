@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { ProtectedRoute } from '../components/common/ProtectedRoute';
-import axios from 'axios';
+import api from '../services/api';
 
 interface FeeSettings {
   transferFee: number;
@@ -22,42 +22,16 @@ export default function Fees() {
     minimumAmount: 0
   });
 
-  // Set up axios with authentication
-  const setupAxiosAuth = () => {
-    const token = localStorage.getItem('admin_token');
-    console.log('🔑 DEBUG: Token available:', !!token);
-    
-    if (token) {
-      return {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      };
-    }
-    return {};
-  };
-
   const fetchSettings = async () => {
     try {
       setIsLoading(true);
       console.log('🔍 DEBUG: Attempting to fetch settings...');
       
       // Log the full URL we're trying to access
-      const fullUrl = '/api/admin/settings';
-      console.log('🔍 DEBUG: Request URL:', fullUrl);
+      const endpoint = '/admin/settings';
+      console.log('🔍 DEBUG: Request URL:', endpoint);
       
-      // Get authentication config
-      const authConfig = setupAxiosAuth();
-      console.log('🔍 DEBUG: Auth config:', authConfig);
-      
-      // Print the axios configuration
-      console.log('🔍 DEBUG: Axios defaults:', {
-        baseURL: axios.defaults.baseURL,
-        headers: axios.defaults.headers,
-        timeout: axios.defaults.timeout
-      });
-      
-      const response = await axios.get(fullUrl, authConfig);
+      const response = await api.get(endpoint);
       
       console.log('✅ DEBUG: Settings fetch successful:', response.data);
       
@@ -78,8 +52,6 @@ export default function Fees() {
         statusText: (err as { response?: { statusText: string } })?.response?.statusText,
         url: (err as { config?: { url: string } })?.config?.url,
         method: (err as { config?: { method: string } })?.config?.method,
-        headers: (err as { config?: { headers: Record<string, string> } })?.config?.headers,
-        responseData: (err as { response?: { data: unknown } })?.response?.data
       };
       
       console.error('❌ DEBUG: Detailed error:', errorInfo);
@@ -93,7 +65,7 @@ export default function Fees() {
 
   useEffect(() => {
     fetchSettings();
-  }, [fetchSettings]);
+  }, []);
 
   const handleSave = async () => {
     try {
@@ -124,14 +96,11 @@ export default function Fees() {
         exchangeRate: exchangeRateValue
       });
       
-      // Get authentication config
-      const authConfig = setupAxiosAuth();
-      
       // Save to API
-      const response = await axios.put('/api/admin/settings', {
+      const response = await api.put('/admin/settings', {
         networkFeePercentage: networkFeeValue,
         exchangeRate: exchangeRateValue
-      }, authConfig);
+      });
       
       console.log('✅ DEBUG: Settings save response:', response.data);
       
@@ -155,8 +124,6 @@ export default function Fees() {
         statusText: (err as { response?: { statusText: string } })?.response?.statusText,
         url: (err as { config?: { url: string } })?.config?.url,
         method: (err as { config?: { method: string } })?.config?.method,
-        headers: (err as { config?: { headers: Record<string, string> } })?.config?.headers,
-        responseData: (err as { response?: { data: unknown } })?.response?.data
       };
       
       console.error('❌ DEBUG: Detailed save error:', errorInfo);
