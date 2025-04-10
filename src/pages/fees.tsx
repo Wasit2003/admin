@@ -75,12 +75,9 @@ export default function Fees() {
   const fetchSettings = async () => {
     try {
       setIsLoading(true);
-      console.log('🔍 DEBUG: Attempting to fetch settings directly...');
+      console.log('🔍 DEBUG: Attempting to fetch settings...');
       
-      // Direct fetch without any routing middleware or axios interceptors
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://wasit-backend.onrender.com';
-      console.log('🔍 DEBUG: Using direct API URL:', apiUrl);
-      
+      // Using our local API route that proxies to the backend
       const token = localStorage.getItem('admin_token');
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
@@ -91,24 +88,24 @@ export default function Fees() {
         headers['Authorization'] = `Bearer ${token}`;
       }
       
-      // Add timestamp to prevent caching
-      const url = `${apiUrl}/api/admin/settings?_ts=${Date.now()}`;
-      console.log('🔍 DEBUG: Direct fetch URL:', url);
+      // Add timestamp to prevent caching - now use the local API endpoint
+      const localApiUrl = `/api/admin/settings?_ts=${Date.now()}`;
+      console.log('🔍 DEBUG: Using local API URL:', localApiUrl);
       
       try {
-        const response = await fetch(url, {
+        const response = await fetch(localApiUrl, {
           method: 'GET',
           headers: headers
         });
         
-        console.log('✅ DEBUG: Direct fetch response status:', response.status);
+        console.log('✅ DEBUG: Fetch response status:', response.status);
         
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         
         const data = await response.json();
-        console.log('✅ DEBUG: Direct fetch successful:', data);
+        console.log('✅ DEBUG: Fetch successful:', data);
         
         if (data.success && data.settings) {
           const { networkFeePercentage, exchangeRate } = data.settings;
@@ -118,7 +115,7 @@ export default function Fees() {
           setSettings(data.settings);
         }
       } catch (directErr: any) {
-        console.error('❌ DEBUG: Direct fetch failed, trying fallback...', directErr);
+        console.error('❌ DEBUG: Local API fetch failed:', directErr);
         
         // Fallback to hardcoded values if all else fails
         setNetworkFee('1.0');
@@ -176,18 +173,31 @@ export default function Fees() {
         exchangeRate: exchangeRateValue
       });
       
-      // Get authentication config
-      const authConfig = setupAxiosAuth();
+      // Get token for authentication
+      const token = localStorage.getItem('admin_token');
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      };
       
-      // Use the api client instead of direct axios with the correct path
-      const response = await api.put('/api/admin/settings', {
-        networkFeePercentage: networkFeeValue,
-        exchangeRate: exchangeRateValue
-      }, authConfig);
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
       
-      console.log('✅ DEBUG: Settings save response:', response.data);
+      // Use the local API endpoint
+      const response = await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: headers,
+        body: JSON.stringify({
+          networkFeePercentage: networkFeeValue,
+          exchangeRate: exchangeRateValue
+        })
+      });
       
-      if (response.data.success) {
+      const responseData = await response.json();
+      console.log('✅ DEBUG: Settings save response:', responseData);
+      
+      if (responseData.success) {
         setMessage(`Changes saved! Network Fee: ${networkFeeValue}%, Exchange Rate: ${exchangeRateValue}`);
         
         // Clear message after 3 seconds
@@ -203,12 +213,6 @@ export default function Fees() {
       // Enhanced error logging
       const errorInfo = {
         message: (err as Error)?.message,
-        status: (err as { response?: { status: number } })?.response?.status,
-        statusText: (err as { response?: { statusText: string } })?.response?.statusText,
-        url: (err as { config?: { url: string } })?.config?.url,
-        method: (err as { config?: { method: string } })?.config?.method,
-        headers: (err as { config?: { headers: Record<string, string> } })?.config?.headers,
-        responseData: (err as { response?: { data: unknown } })?.response?.data
       };
       
       console.error('❌ DEBUG: Detailed save error:', errorInfo);
@@ -276,17 +280,17 @@ export default function Fees() {
                       onClick={async () => {
                         setConnectionStatus('checking');
                         try {
-                          // Try direct API endpoint
-                          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/settings`);
-                          console.log('Direct fetch result:', response.status);
+                          // Try local API endpoint
+                          const response = await fetch(`/api/admin/settings`);
+                          console.log('Local API connection test result:', response.status);
                           if (response.ok) {
-                            alert(`Direct connection successful! Status: ${response.status}`);
+                            alert(`Connection successful! Status: ${response.status}`);
                           } else {
-                            alert(`Direct connection failed! Status: ${response.status}`);
+                            alert(`Connection failed! Status: ${response.status}`);
                           }
                         } catch (err) {
-                          console.error('Direct fetch error:', err);
-                          alert(`Direct connection error: ${(err as Error).message}`);
+                          console.error('Local API connection error:', err);
+                          alert(`Connection error: ${(err as Error).message}`);
                         } finally {
                           // Retry connection test
                           const checkConnection = async () => {
@@ -310,7 +314,7 @@ export default function Fees() {
                       }}
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
-                      Test Direct Connection
+                      Test Connection
                     </button>
                     
                     <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs">
