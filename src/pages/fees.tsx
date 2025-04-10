@@ -2,12 +2,6 @@ import React, { useState, useEffect, ChangeEvent, useCallback } from 'react';
 import { ProtectedRoute } from '../components/common/ProtectedRoute';
 import api from '../services/api';
 
-interface FeeSettings {
-  transferFee: number;
-  withdrawalFee: number;
-  minimumAmount: number;
-}
-
 interface ResponseDetails {
   status: number;
   statusText: string;
@@ -335,9 +329,9 @@ export default function Fees() {
                           } else {
                             alert(`Connection failed! Status: ${response.status}`);
                           }
-                        } catch (err) {
-                          console.error('Local API connection error:', err);
-                          alert(`Connection error: ${(err as Error).message}`);
+                        } catch (connectionError) {
+                          console.error('Local API connection error:', connectionError);
+                          alert(`Connection error: ${(connectionError as Error).message}`);
                         } finally {
                           // Retry connection test
                           const checkConnection = async () => {
@@ -348,7 +342,7 @@ export default function Fees() {
                               } else {
                                 setConnectionStatus('error');
                               }
-                            } catch (error) {
+                            } catch (connectionError) {
                               setConnectionStatus('error');
                             }
                           };
