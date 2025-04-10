@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, useCallback } from 'react';
 import { ProtectedRoute } from '../components/common/ProtectedRoute';
 import api from '../services/api';
 
@@ -35,27 +35,17 @@ export default function Fees() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [debugInfo, setDebugInfo] = useState<DebugInfo | null>(null);
-  const [settings, setSettings] = useState<FeeSettings>({
-    transferFee: 0,
-    withdrawalFee: 0,
-    minimumAmount: 0
-  });
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'error'>('checking');
 
-  // Set up axios with authentication
-  const setupAxiosAuth = () => {
-    const token = localStorage.getItem('admin_token');
-    console.log('🔑 DEBUG: Token available:', !!token);
-    
-    if (token) {
-      return {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      };
-    }
-    return {};
-  };
+  const handleError = useCallback((error: Error, message: string) => {
+    console.error(`❌ ${message}:`, error);
+    setError(`${message}: ${error.message}`);
+    setDebugInfo({
+      message: error.message
+    });
+    setIsLoading(false);
+    setIsSaving(false);
+  }, []);
 
   // Check connection to backend first
   useEffect(() => {
@@ -70,23 +60,17 @@ export default function Fees() {
           setConnectionStatus('error');
           console.error('❌ Backend connection failed');
         }
-      } catch (error) {
+      } catch (err) {
         setConnectionStatus('error');
-        console.error('❌ Connection test error:', error);
+        console.error('❌ Connection test error:', err);
       }
     };
     
     checkConnection();
   }, []);
 
-  // Only fetch settings if connected
-  useEffect(() => {
-    if (connectionStatus === 'connected') {
-      fetchSettings();
-    }
-  }, [connectionStatus]);
-
-  const fetchSettings = async () => {
+  // Define fetchSettings with useCallback to avoid dependency issues
+  const fetchSettings = useCallback(async () => {
     try {
       setIsLoading(true);
       console.log('🔍 DEBUG: Attempting to fetch settings...');
@@ -125,7 +109,7 @@ export default function Fees() {
       console.log('🔍 DEBUG: Response status:', response.status);
       
       if (!response.ok) {
-        const errorData = await response.json().catch(e => ({ message: 'Failed to parse error response' }));
+        const errorData = await response.json().catch(() => ({ message: 'Failed to parse error response' }));
         console.error('❌ DEBUG: Error response:', errorData);
         
         setDebugInfo({
@@ -181,10 +165,17 @@ export default function Fees() {
       }
       
       setIsLoading(false);
-    } catch (error) {
-      handleError(error instanceof Error ? error : new Error(String(error)), 'Failed to fetch settings');
+    } catch (err) {
+      handleError(err instanceof Error ? err : new Error(String(err)), 'Failed to fetch settings');
     }
-  };
+  }, [handleError]);
+
+  // Only fetch settings if connected
+  useEffect(() => {
+    if (connectionStatus === 'connected') {
+      fetchSettings();
+    }
+  }, [connectionStatus, fetchSettings]); // Add fetchSettings as a dependency
 
   const handleSave = async () => {
     try {
@@ -273,8 +264,8 @@ export default function Fees() {
       } else {
         setError('Failed to save settings: ' + (responseData.message || 'Unknown error'));
       }
-    } catch (error) {
-      handleError(error instanceof Error ? error : new Error(String(error)), 'Failed to save settings');
+    } catch (err) {
+      handleError(err instanceof Error ? err : new Error(String(err)), 'Failed to save settings');
     } finally {
       setIsSaving(false);
     }
@@ -297,17 +288,7 @@ export default function Fees() {
     }
   };
 
-  const handleError = (error: Error, message: string) => {
-    console.error(`❌ ${message}:`, error);
-    setError(`${message}: ${error.message}`);
-    setDebugInfo({
-      message: error.message
-    });
-    setIsLoading(false);
-    setIsSaving(false);
-  };
-
-  console.log('Current settings:', settings);
+  console.log('Current settings:', { networkFee, exchangeRate });
 
   return (
     <ProtectedRoute>

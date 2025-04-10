@@ -10,6 +10,7 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ receiptUrl, onClos
   const [error, setError] = useState<string | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
 
+  // Load the receipt image when the URL changes
   useEffect(() => {
     if (!receiptUrl) {
       setLoading(false);
@@ -55,14 +56,18 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ receiptUrl, onClos
       setError(`Invalid receipt URL: ${receiptUrl}`);
       setLoading(false);
     }
-      
-    // Clean up function to revoke object URL
+  }, [receiptUrl]);
+
+  // Cleanup effect for the object URL
+  useEffect(() => {
+    // Clean up function to revoke object URL when component unmounts
+    // or when imageSrc changes
     return () => {
       if (imageSrc) {
         URL.revokeObjectURL(imageSrc);
       }
     };
-  }, [receiptUrl]);
+  }, [imageSrc]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

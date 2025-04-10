@@ -399,8 +399,8 @@ export const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = (
     return 'N/A';
   };
   
-  // Extract wallet address from metadata
-  const getWalletAddress = () => {
+  // Extract wallet address from metadata - wrap in useCallback to fix the dependency warning
+  const getWalletAddress = React.useCallback(() => {
     // Check if metadata exists
     if (!transaction.metadata) {
       console.log('DEBUG_WALLET: No metadata found in transaction');
@@ -420,7 +420,7 @@ export const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = (
     }
     
     return 'N/A';
-  };
+  }, [transaction.metadata]); // Add transaction.metadata as a dependency
   
   const paymentGateway = getPaymentGateway();
   const userName = getUserName();
@@ -509,7 +509,7 @@ export const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = (
         setUsdtDestination(address);
       }
     }
-  }, [transaction]);
+  }, [transaction, getWalletAddress]); // Add getWalletAddress as a dependency
 
   useEffect(() => {
     getWalletAddress();

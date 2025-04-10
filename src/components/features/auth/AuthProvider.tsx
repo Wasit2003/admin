@@ -1,4 +1,4 @@
-import { ReactNode, useState, useEffect } from 'react';
+import { ReactNode, useState, useEffect, useCallback } from 'react';
 import { AuthContext } from '../../../hooks/useAuth';
 import api from '../../../services/api';
 import { useRouter } from 'next/router';
@@ -23,15 +23,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    // Check if user is logged in on mount
-    const token = localStorage.getItem('admin_token');
-    if (token) {
-      checkAuth();
-    }
-  }, []);
-
-  const checkAuth = async () => {
+  // Use useCallback to memoize the checkAuth function
+  const checkAuth = useCallback(async () => {
     try {
       const token = localStorage.getItem('admin_token');
       console.log('Token retrieved:', token); // Debugging print
@@ -45,7 +38,41 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.error('Auth check failed:', error);
       logout();
     }
-  };
+  }, []);  // Empty dependency array since it doesn't depend on any props or state
+  
+  // Add logout to dependencies of checkAuth to avoid the circular dependency
+  const logout = useCallback(() => {
+    localStorage.removeItem('admin_token');
+    setUser(null);
+    setIsAuthenticated(false);
+    router.push('/login');
+  }, [router]);
+  
+  // Update checkAuth to include logout as a dependency
+  useEffect(() => {
+    // Updated checkAuth function to be a local function in this effect
+    const checkAuthInEffect = async () => {
+      try {
+        const token = localStorage.getItem('admin_token');
+        console.log('Token retrieved:', token);
+        
+        const response = await api.get('/admin/me');
+        console.log('Auth check response:', response.data);
+        
+        setUser(response.data);
+        setIsAuthenticated(true);
+      } catch (error: unknown) {
+        console.error('Auth check failed:', error);
+        logout();
+      }
+    };
+    
+    // Check if user is logged in on mount
+    const token = localStorage.getItem('admin_token');
+    if (token) {
+      checkAuthInEffect();
+    }
+  }, [logout]);  // Use logout as a dependency
 
   const login = async (email: string, password: string) => {
     try {
@@ -72,13 +99,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.error('Login error:', errorMessage);
       throw new Error(errorMessage === 'Unknown error occurred' ? 'Invalid credentials' : errorMessage);
     }
-  };
-
-  const logout = () => {
-    localStorage.removeItem('admin_token');
-    setUser(null);
-    setIsAuthenticated(false);
-    router.push('/login');
   };
 
   return (

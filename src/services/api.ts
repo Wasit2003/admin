@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 // Get API URL from environment or use default
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
@@ -47,7 +47,7 @@ const logRequest = (config: AxiosRequestConfig) => {
   if (config.data) {
     try {
       console.log('Body:', typeof config.data === 'string' ? JSON.parse(config.data) : config.data);
-    } catch (error) {
+    } catch (err) {
       console.log('Body:', config.data);
     }
   }
