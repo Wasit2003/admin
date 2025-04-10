@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 // Get API URL from environment or use default
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
@@ -6,9 +6,27 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 console.log('🌐 API Service Initialized with URL:', API_URL);
 console.log('🌐 Running in environment:', process.env.NODE_ENV);
 
+// Define response types
+interface ConnectionTestResponse {
+  success: boolean;
+  data?: Record<string, unknown>;
+  error?: Error;
+  responseDetails?: ResponseDetails;
+}
+
+interface ResponseDetails {
+  status: number;
+  statusText: string;
+  headers: Record<string, string>;
+  url: string;
+  redirected: boolean;
+  type: string;
+  requestTime?: number;
+}
+
 // Extend AxiosInstance type to include our custom methods
 interface EnhancedAxiosInstance extends AxiosInstance {
-  testConnection(): Promise<{ success: boolean; data?: any; error?: any }>;
+  testConnection(): Promise<ConnectionTestResponse>;
 }
 
 // Create axios instance with base configuration
@@ -21,7 +39,7 @@ const api = axios.create({
 }) as EnhancedAxiosInstance;
 
 // Helper function to log detailed request information
-const logRequest = (config: any) => {
+const logRequest = (config: AxiosRequestConfig) => {
   console.group('🔍 API Request Details:');
   console.log('Method:', config.method?.toUpperCase());
   console.log('URL:', `${config.baseURL}${config.url}`);
@@ -29,7 +47,7 @@ const logRequest = (config: any) => {
   if (config.data) {
     try {
       console.log('Body:', typeof config.data === 'string' ? JSON.parse(config.data) : config.data);
-    } catch (e) {
+    } catch (error) {
       console.log('Body:', config.data);
     }
   }
@@ -126,57 +144,35 @@ api.interceptors.response.use(
 // Add a method to test connectivity to the backend
 api.testConnection = async () => {
   try {
-    console.log('🔍 Testing connection to backend...');
-    console.log('🌐 Browser online status:', navigator.onLine ? 'Online' : 'Offline');
-    console.log('🌐 Environment:', process.env.NODE_ENV);
-    console.log('🌐 Origin:', window.location.origin);
-    console.log('🌐 API URL from env:', process.env.NEXT_PUBLIC_API_URL || 'Not set');
-    
-    // Try local API endpoint
-    const endpoint = '/api/admin/settings';
-    console.log(`🔍 Using local API endpoint: ${endpoint}`);
-    
-    // Get authentication token
-    const token = localStorage.getItem('admin_token');
-    console.log('🔑 Auth token available:', !!token);
-    if (token) {
-      console.log('🔑 Token first 10 chars:', token.substring(0, 10) + '...');
-    }
-    
-    // First try a HEAD request to check basic connectivity
-    try {
-      console.log('🔄 Testing with HEAD request first...');
-      const headResponse = await fetch(endpoint, {
-        method: 'HEAD',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token || ''}`
-        }
-      });
-      console.log('🔄 HEAD response status:', headResponse.status);
-    } catch (headError) {
-      console.error('❌ HEAD request failed:', headError);
-    }
-    
-    // Now try the actual GET request
-    console.log('🔄 Sending main connection test request...');
+    console.log('🔄 Testing connection to backend API...');
     const startTime = Date.now();
-    const response = await fetch(endpoint, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token || ''}`
-      }
-    });
-    const endTime = Date.now();
-    const requestTime = endTime - startTime;
+    const token = localStorage.getItem('admin_token');
     
-    console.log(`🔄 Response received in ${requestTime}ms`);
-    console.log('🔄 Response status:', response.status);
-    console.log('🔄 Response status text:', response.statusText);
+    // First try the local API proxy which should handle CORS properly
+    const localApiUrl = `/api/admin/settings?_t=${Date.now()}`;
+    console.log('🔄 Testing connection to local API proxy:', localApiUrl);
+    
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+    
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+      console.log('🔑 Adding token to request');
+    }
+    
+    const requestTime = Date.now() - startTime;
+    console.log(`🔄 Request prepared in ${requestTime}ms`);
+    
+    // Try the connection
+    const response = await fetch(localApiUrl, {
+      method: 'GET',
+      headers: headers,
+    });
     
     // Capture detailed response info for debugging
-    const responseDetails = {
+    const responseDetails: ResponseDetails = {
       status: response.status,
       statusText: response.statusText,
       headers: Object.fromEntries([...response.headers.entries()]),
@@ -229,37 +225,10 @@ api.testConnection = async () => {
       responseDetails: responseDetails
     };
   } catch (error) {
-    console.error('❌ Connection test failed:', error);
-    console.error('❌ Detailed error:', {
-      name: (error as Error).name,
-      message: (error as Error).message,
-      stack: (error as Error).stack
-    });
-    
-    // Try a direct network check
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://wasit-backend.onrender.com';
-      console.log(`🔄 Attempting direct ping to backend domain: ${apiUrl}`);
-      const pingResult = await fetch(apiUrl, { method: 'HEAD', mode: 'no-cors' });
-      console.log('🔄 Direct ping result:', pingResult.type); // Will be 'opaque' for no-cors
-    } catch (pingError) {
-      console.error('❌ Direct ping failed:', pingError);
-    }
-    
+    console.error('❌ Connection test failed:', error instanceof Error ? error.message : String(error));
     return {
       success: false,
-      error: {
-        name: (error as Error).name,
-        message: (error as Error).message,
-        stack: (error as Error).stack
-      },
-      message: 'Failed to connect to API. Check your connection or contact support.',
-      environmentInfo: {
-        apiUrl: process.env.NEXT_PUBLIC_API_URL || 'Not set',
-        origin: window.location.origin,
-        nodeEnv: process.env.NODE_ENV,
-        browserOnline: navigator.onLine
-      }
+      error: error instanceof Error ? error : new Error(String(error))
     };
   }
 };

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { ProtectedRoute } from '../components/common/ProtectedRoute';
-import axios from 'axios';
 import api from '../services/api';
 
 interface FeeSettings {
@@ -9,28 +8,23 @@ interface FeeSettings {
   minimumAmount: number;
 }
 
-// Define type for debug info
+interface ResponseDetails {
+  status: number;
+  statusText: string;
+  headers?: Record<string, string>;
+  url: string;
+  redirected: boolean;
+  type: string;
+  requestTime?: number;
+}
+
 interface DebugInfo {
   message?: string;
-  error?: any;
-  fallback?: string;
   status?: number;
   statusText?: string;
   url?: string;
   method?: string;
-  headers?: Record<string, string>;
-  responseDetails?: {
-    status: number;
-    statusText: string;
-    headers: Record<string, string>;
-    url: string;
-    redirected: boolean;
-    type: string;
-    requestTime?: number;
-  };
-  errorBody?: any;
-  data?: any;
-  [key: string]: any; // Allow for additional properties
+  responseDetails?: ResponseDetails;
 }
 
 export default function Fees() {
@@ -47,7 +41,6 @@ export default function Fees() {
     minimumAmount: 0
   });
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'error'>('checking');
-  const [connectionDetails, setConnectionDetails] = useState<any>(null);
 
   // Set up axios with authentication
   const setupAxiosAuth = () => {
@@ -72,16 +65,13 @@ export default function Fees() {
         const result = await api.testConnection();
         if (result.success) {
           setConnectionStatus('connected');
-          setConnectionDetails(result.data);
           console.log('✅ Backend connection verified');
         } else {
           setConnectionStatus('error');
-          setConnectionDetails(result.error);
           console.error('❌ Backend connection failed');
         }
       } catch (error) {
         setConnectionStatus('error');
-        setConnectionDetails(error);
         console.error('❌ Connection test error:', error);
       }
     };
@@ -126,129 +116,73 @@ export default function Fees() {
       const localApiUrl = `/api/admin/settings?_ts=${Date.now()}`;
       console.log('🔍 DEBUG: Using local API URL:', localApiUrl);
       
-      try {
-        console.log('🔄 DEBUG: Starting fetch request...');
+      // Make the request
+      const response = await fetch(localApiUrl, {
+        method: 'GET',
+        headers: headers
+      });
+      
+      console.log('🔍 DEBUG: Response status:', response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(e => ({ message: 'Failed to parse error response' }));
+        console.error('❌ DEBUG: Error response:', errorData);
         
-        // First try a simple HEAD request to check basic connectivity
-        try {
-          console.log('🔄 Testing API endpoint with HEAD request...');
-          const headCheck = await fetch(localApiUrl, {
-            method: 'HEAD',
-            headers: headers
-          });
-          console.log('🔄 HEAD request status:', headCheck.status);
-        } catch (headError) {
-          console.error('❌ DEBUG: HEAD check failed:', headError);
-        }
-        
-        // Perform the actual GET request
-        console.log('🔄 DEBUG: Sending main GET request...');
-        const response = await fetch(localApiUrl, {
-          method: 'GET',
-          headers: headers
-        });
-        
-        console.log('✅ DEBUG: Fetch response received');
-        console.log('✅ DEBUG: Response status:', response.status);
-        console.log('✅ DEBUG: Response status text:', response.statusText);
-        console.log('✅ DEBUG: Response type:', response.type);
-        console.log('✅ DEBUG: Response headers:', Object.fromEntries([...response.headers.entries()]));
-        
-        // Capture response details for debugging
-        const responseDetails = {
+        setDebugInfo({
+          message: `Failed to fetch settings: ${errorData.message || 'Unknown error'}`,
           status: response.status,
           statusText: response.statusText,
-          headers: Object.fromEntries([...response.headers.entries()]),
-          url: response.url,
-          redirected: response.redirected,
-          type: response.type
-        };
-        
-        if (!response.ok) {
-          console.error('❌ DEBUG: HTTP error occurred:', responseDetails);
-          
-          // Try to read the error body, even on error status
-          let errorBody;
-          try {
-            errorBody = await response.json();
-            console.error('❌ DEBUG: Error response body:', errorBody);
-          } catch (jsonErr) {
-            console.error('❌ DEBUG: Could not parse error response as JSON:', jsonErr);
-          }
-          
-          setDebugInfo({
-            message: `Request failed with status code ${response.status}`,
+          url: localApiUrl,
+          method: 'GET',
+          responseDetails: {
             status: response.status,
             statusText: response.statusText,
-            url: localApiUrl,
-            method: 'GET',
-            headers: headers,
-            responseDetails: responseDetails,
-            errorBody: errorBody || 'Could not parse error body'
-          });
-          
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+            url: response.url,
+            type: response.type,
+            redirected: response.redirected
+          }
+        });
         
-        console.log('🔄 DEBUG: Parsing response JSON...');
-        const data = await response.json();
-        console.log('✅ DEBUG: Fetch successful, parsed data:', data);
+        setError(`Failed to fetch settings: ${response.status} ${response.statusText}`);
+        setIsLoading(false);
+        return;
+      }
+      
+      const data = await response.json();
+      console.log('✅ DEBUG: Settings fetched successfully:', data);
+      
+      if (data && data.settings) {
+        // Extract and set the network fee and exchange rate
+        const networkFeePercentage = data.settings.networkFeePercentage;
+        const exchangeRateValue = data.settings.exchangeRate;
         
-        if (data.success && data.settings) {
-          const { networkFeePercentage, exchangeRate } = data.settings;
-          console.log('✅ DEBUG: Extracted settings values:', { networkFeePercentage, exchangeRate });
-          
+        if (networkFeePercentage !== undefined) {
           setNetworkFee(networkFeePercentage.toString());
-          setExchangeRate(exchangeRate.toString());
-          setSettings(data.settings);
-        } else {
-          console.error('❌ DEBUG: Data structure not as expected:', data);
-          setDebugInfo({
-            message: 'Backend response did not contain expected data structure',
-            data: data
-          });
         }
-      } catch (directErr: any) {
-        console.error('❌ DEBUG: Local API fetch failed:', directErr);
-        console.error('❌ DEBUG: Error details:', {
-          name: directErr.name,
-          message: directErr.message,
-          stack: directErr.stack
-        });
         
-        // Fallback to hardcoded values if all else fails
-        setNetworkFee('1.0');
-        setExchangeRate('1.0');
-        setSettings({
-          transferFee: 1.0,
-          withdrawalFee: 1.0,
-          minimumAmount: 0
-        });
+        if (exchangeRateValue !== undefined) {
+          setExchangeRate(exchangeRateValue.toString());
+        }
         
-        // Show error but don't block the UI
+        console.log('✅ DEBUG: Settings parsed and applied');
+      } else {
+        console.error('❌ DEBUG: Invalid or missing settings data:', data);
+        setError('Received invalid settings data from server');
         setDebugInfo({
-          message: directErr.message,
-          fallback: 'Using default values due to API error',
-          error: {
-            name: directErr.name,
-            message: directErr.message,
-            stack: directErr.stack
+          message: 'Invalid settings data structure',
+          responseDetails: {
+            status: response.status,
+            statusText: response.statusText,
+            url: response.url,
+            type: response.type,
+            redirected: response.redirected
           }
         });
       }
-    } catch (err: unknown) {
-      console.error('❌ DEBUG: Error in fetchSettings:', err);
-      setDebugInfo({
-        message: (err as Error)?.message,
-        error: {
-          name: (err as Error)?.name,
-          message: (err as Error)?.message,
-          stack: (err as Error)?.stack
-        }
-      });
-      setError(`Failed to load settings: ${(err as Error)?.message || 'unknown error'}`);
-    } finally {
+      
       setIsLoading(false);
+    } catch (error) {
+      handleError(error instanceof Error ? error : new Error(String(error)), 'Failed to fetch settings');
     }
   };
 
@@ -302,6 +236,30 @@ export default function Fees() {
         })
       });
       
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Failed to parse error response' }));
+        console.error('❌ DEBUG: Error response:', errorData);
+        
+        setDebugInfo({
+          message: `Failed to save settings: ${errorData.message || 'Unknown error'}`,
+          status: response.status,
+          statusText: response.statusText,
+          url: '/api/admin/settings',
+          method: 'PUT',
+          responseDetails: {
+            status: response.status,
+            statusText: response.statusText,
+            url: response.url,
+            type: response.type,
+            redirected: response.redirected
+          }
+        });
+        
+        setError(`Failed to save settings: ${response.status} ${response.statusText}`);
+        setIsSaving(false);
+        return;
+      }
+      
       const responseData = await response.json();
       console.log('✅ DEBUG: Settings save response:', responseData);
       
@@ -313,20 +271,10 @@ export default function Fees() {
           setMessage('');
         }, 3000);
       } else {
-        setError('Failed to save settings');
+        setError('Failed to save settings: ' + (responseData.message || 'Unknown error'));
       }
-    } catch (err: unknown) {
-      console.error('❌ DEBUG: Error saving settings:', err);
-      
-      // Enhanced error logging
-      const errorInfo = {
-        message: (err as Error)?.message,
-      };
-      
-      console.error('❌ DEBUG: Detailed save error:', errorInfo);
-      setDebugInfo(errorInfo);
-      
-      setError(`Failed to save settings: ${(err as Error)?.message || 'unknown error'}`);
+    } catch (error) {
+      handleError(error instanceof Error ? error : new Error(String(error)), 'Failed to save settings');
     } finally {
       setIsSaving(false);
     }
@@ -347,6 +295,16 @@ export default function Fees() {
     if (!isNaN(value) && value >= 0 && value <= 100) {
       setNetworkFee(inputValue);
     }
+  };
+
+  const handleError = (error: Error, message: string) => {
+    console.error(`❌ ${message}:`, error);
+    setError(`${message}: ${error.message}`);
+    setDebugInfo({
+      message: error.message
+    });
+    setIsLoading(false);
+    setIsSaving(false);
   };
 
   console.log('Current settings:', settings);
@@ -406,14 +364,11 @@ export default function Fees() {
                               const result = await api.testConnection();
                               if (result.success) {
                                 setConnectionStatus('connected');
-                                setConnectionDetails(result.data);
                               } else {
                                 setConnectionStatus('error');
-                                setConnectionDetails(result.error);
                               }
                             } catch (error) {
                               setConnectionStatus('error');
-                              setConnectionDetails(error);
                             }
                           };
                           

@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   env: {
     // Make sure this exact URL is set and available in the frontend
     NEXT_PUBLIC_API_URL: 'https://wasit-backend.onrender.com',
