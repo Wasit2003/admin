@@ -50,8 +50,8 @@ export default function Fees() {
       // Get authentication config
       const authConfig = setupAxiosAuth();
       
-      // Use the api client instead of direct axios
-      const response = await api.get('/admin/settings', authConfig);
+      // Use the api client instead of direct axios with the correct path
+      const response = await api.get('/api/admin/settings', authConfig);
       
       console.log('✅ DEBUG: Settings fetch successful:', response.data);
       
@@ -121,8 +121,8 @@ export default function Fees() {
       // Get authentication config
       const authConfig = setupAxiosAuth();
       
-      // Use the api client instead of direct axios
-      const response = await api.put('/admin/settings', {
+      // Use the api client instead of direct axios with the correct path
+      const response = await api.put('/api/admin/settings', {
         networkFeePercentage: networkFeeValue,
         exchangeRate: exchangeRateValue
       }, authConfig);
