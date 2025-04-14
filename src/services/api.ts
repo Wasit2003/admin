@@ -2,9 +2,12 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 // Get API URL from environment or use default
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+// We'll use this for proxying
+const BACKEND_URL = API_URL;
 
 console.log('🌐 API Service Initialized with URL:', API_URL);
 console.log('🌐 Running in environment:', process.env.NODE_ENV);
+console.log('🌐 Using local API proxies in this environment');
 
 // Define response types
 interface ConnectionTestResponse {
@@ -31,7 +34,8 @@ interface EnhancedAxiosInstance extends AxiosInstance {
 
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: API_URL,
+  // Use relative URLs by default so they go through Next.js API routes
+  baseURL: '',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -70,11 +74,11 @@ api.interceptors.request.use(
       let endpoint = config.url;
       
       // If it's a direct backend URL, convert it to use our local proxy
-      if (endpoint.includes('wasit-backend.onrender.com')) {
+      if (endpoint.includes('wasit-backend.onrender.com') || endpoint.includes(BACKEND_URL)) {
         // Extract the path after /api/admin/
-        const apiPath = endpoint.split('/api/admin/')[1];
-        if (apiPath) {
-          endpoint = `/api/admin/${apiPath}`;
+        const apiPathMatch = endpoint.match(/\/api\/admin\/([^?]*)/);
+        if (apiPathMatch && apiPathMatch[1]) {
+          endpoint = `/api/admin/${apiPathMatch[1]}`;
           console.log(`🔄 Converting direct backend URL to local proxy: ${config.url} -> ${endpoint}`);
         }
       } 
