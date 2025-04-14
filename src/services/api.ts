@@ -5,7 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 // We'll use this for proxying
 const BACKEND_URL = API_URL;
 
-console.log('🌐 API Service Initialized with URL:', API_URL);
+console.log('🌐 API Service Initialized with original URL:', API_URL);
 console.log('🌐 Running in environment:', process.env.NODE_ENV);
 console.log('🌐 Using local API proxies in this environment');
 
@@ -42,11 +42,58 @@ const api = axios.create({
   timeout: 20000, // Increase timeout to 20 seconds
 }) as EnhancedAxiosInstance;
 
+// Helper function to convert backend URLs to local proxy URLs
+const convertToProxyUrl = (url: string): string => {
+  console.log(`🔄 Original URL before conversion: ${url}`);
+  
+  // If it's already a local API route, leave it alone
+  if (url.startsWith('/api/') && !url.includes('wasit-backend.onrender.com')) {
+    console.log(`✅ URL is already a local API route: ${url}`);
+    return url;
+  }
+  
+  let proxyUrl = url;
+  
+  // Case 1: Full backend URL (with or without API path)
+  if (url.includes('wasit-backend.onrender.com') || url.includes(BACKEND_URL)) {
+    // Extract the path after the domain
+    const urlObj = new URL(url);
+    const pathParts = urlObj.pathname.split('/');
+    
+    // Check if this is an admin API path
+    if (pathParts.includes('api') && pathParts.includes('admin')) {
+      // Find the index of 'admin' in the path
+      const adminIndex = pathParts.indexOf('admin');
+      if (adminIndex >= 0 && adminIndex + 1 < pathParts.length) {
+        // Reconstruct path with everything after 'admin'
+        const endpointPath = pathParts.slice(adminIndex + 1).join('/');
+        proxyUrl = `/api/admin/${endpointPath}${urlObj.search || ''}`;
+      } else {
+        proxyUrl = `/api/admin${urlObj.search || ''}`;
+      }
+    } else {
+      // For non-admin API paths, just use the catch-all
+      proxyUrl = `/api${urlObj.pathname}${urlObj.search || ''}`;
+    }
+  } 
+  // Case 2: Relative path starting with /admin
+  else if (url.startsWith('/admin/')) {
+    proxyUrl = `/api${url}`;
+  }
+  // Case 3: Other relative path not starting with /api (treat as admin endpoint)
+  else if (!url.startsWith('/api/') && !url.startsWith('http')) {
+    proxyUrl = `/api/admin/${url.replace(/^\//, '')}`;
+  }
+  
+  console.log(`🔄 Converted URL: ${url} -> ${proxyUrl}`);
+  return proxyUrl;
+};
+
 // Helper function to log detailed request information
 const logRequest = (config: AxiosRequestConfig) => {
   console.group('🔍 API Request Details:');
   console.log('Method:', config.method?.toUpperCase());
-  console.log('URL:', `${config.baseURL}${config.url}`);
+  console.log('URL:', `${config.baseURL || ''}${config.url}`);
   console.log('Headers:', config.headers);
   if (config.data) {
     try {
@@ -66,35 +113,21 @@ api.interceptors.request.use(
     const token = localStorage.getItem('admin_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('🔑 Added authorization token to request');
     }
     
-    // Ensure URL has the correct format and use local proxy
+    // Force all URLs to go through our local proxies
     if (config.url) {
-      // Extract the endpoint path
-      let endpoint = config.url;
+      // Save original URL for logging
+      const originalUrl = config.url;
       
-      // If it's a direct backend URL, convert it to use our local proxy
-      if (endpoint.includes('wasit-backend.onrender.com') || endpoint.includes(BACKEND_URL)) {
-        // Extract the path after /api/admin/
-        const apiPathMatch = endpoint.match(/\/api\/admin\/([^?]*)/);
-        if (apiPathMatch && apiPathMatch[1]) {
-          endpoint = `/api/admin/${apiPathMatch[1]}`;
-          console.log(`🔄 Converting direct backend URL to local proxy: ${config.url} -> ${endpoint}`);
-        }
-      } 
-      // If it's a relative URL referring to admin endpoints
-      else if (endpoint.startsWith('/admin/')) {
-        endpoint = `/api${endpoint}`;
-        console.log(`🔄 Converting admin path to API path: ${config.url} -> ${endpoint}`);
-      }
-      // If it doesn't start with /api/ and isn't an absolute URL, add /api prefix
-      else if (!endpoint.startsWith('/api/') && !endpoint.startsWith('http')) {
-        endpoint = `/api/admin/${endpoint.replace(/^\//, '')}`;
-        console.log(`🔄 Adding API prefix to path: ${config.url} -> ${endpoint}`);
-      }
+      // Convert the URL to use our local proxy
+      config.url = convertToProxyUrl(config.url);
       
-      // Use the modified endpoint
-      config.url = endpoint;
+      // If the URL was changed, log the conversion
+      if (originalUrl !== config.url) {
+        console.log(`🔄 Redirecting request through local proxy: ${originalUrl} -> ${config.url}`);
+      }
     }
     
     // Add timestamp to avoid caching issues

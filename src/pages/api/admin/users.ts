@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-// Helper function to handle CORS preflight requests
+// Helper to set CORS headers for preflight requests
 function setCorsHeaders(res: NextApiResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -11,99 +11,93 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Enhanced logging
-  console.log('🔄 USERS API PROXY: Request received', {
-    method: req.method,
-    url: req.url,
-    query: req.query
-  });
-
-  // Handle CORS preflight
-  setCorsHeaders(res);
+  console.log(`🔄 [API Proxy] Users - ${req.method} request received`);
+  
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
+    console.log('🔄 [API Proxy] Handling CORS preflight request');
+    setCorsHeaders(res);
     return res.status(200).end();
   }
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://wasit-backend.onrender.com';
-  const targetUrl = `${apiUrl}/api/admin/users`;
-  
-  console.log('🔄 Proxying users request to:', targetUrl);
-  
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  };
-  
-  // Forward auth header if it exists
-  if (req.headers.authorization) {
-    headers['Authorization'] = req.headers.authorization as string;
-    console.log('🔑 Authorization header present');
-  } else {
-    console.warn('⚠️ No Authorization header in request');
-  }
-  
   try {
-    // Create URL with query parameters
-    const url = new URL(targetUrl);
+    // Set CORS headers for all responses
+    setCorsHeaders(res);
     
-    // Add query parameters
-    Object.keys(req.query).forEach(key => {
-      if (req.query[key] !== undefined) {
-        url.searchParams.append(key, req.query[key] as string);
-      }
-    });
+    // Construct target URL (backend API endpoint)
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://wasit-backend.onrender.com';
+    const targetUrl = new URL('/api/admin/users', apiUrl);
     
-    // Forward the request to the backend
-    const response = await fetch(url.toString(), {
+    // Add any query parameters
+    if (req.query) {
+      Object.entries(req.query).forEach(([key, value]) => {
+        if (typeof value === 'string') {
+          targetUrl.searchParams.append(key, value);
+        } else if (Array.isArray(value)) {
+          value.forEach(v => targetUrl.searchParams.append(key, v));
+        }
+      });
+    }
+    
+    console.log(`🔄 [API Proxy] Forwarding to: ${targetUrl.toString()}`);
+    
+    // Forward the request to the backend API
+    const fetchOptions: RequestInit = {
       method: req.method,
-      headers,
-      body: req.method !== 'GET' && req.method !== 'HEAD' && req.body ? 
-            JSON.stringify(req.body) : undefined,
-    });
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
     
-    console.log('🔄 Backend users response status:', response.status);
+    // Forward authorization header if present
+    if (req.headers.authorization) {
+      fetchOptions.headers = {
+        ...fetchOptions.headers,
+        'Authorization': req.headers.authorization,
+      };
+      console.log('🔄 [API Proxy] Authorization header forwarded');
+    } else {
+      console.log('⚠️ [API Proxy] No authorization header present');
+    }
     
-    // Get the raw text first, so we can handle non-JSON responses
-    const rawText = await response.text();
+    // Include body for non-GET requests
+    if (req.method !== 'GET' && req.body) {
+      fetchOptions.body = JSON.stringify(req.body);
+    }
     
-    // Try to parse the response as JSON
+    // Make the request to the backend
+    const response = await fetch(targetUrl.toString(), fetchOptions);
+    console.log(`🔄 [API Proxy] Response received: ${response.status} ${response.statusText}`);
+    
+    // Try to get JSON response
     let responseData;
-    try {
-      responseData = rawText ? JSON.parse(rawText) : {};
-    } catch (parseError) {
-      console.error('❌ Error parsing response as JSON:', parseError);
-      console.error('❌ Raw response text:', rawText);
-      
-      // Return a friendly error message
-      return res.status(502).json({
-        success: false,
-        message: 'Invalid response from backend server',
-        error: 'The backend returned an invalid JSON response',
-        details: rawText.slice(0, 200) // Include a snippet of the raw response for debugging
-      });
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      try {
+        responseData = await response.json();
+        console.log('🔄 [API Proxy] Parsed JSON response successfully');
+      } catch (error) {
+        console.error('❌ [API Proxy] Failed to parse JSON response:', error);
+        // If JSON parsing fails, get the raw text
+        const rawText = await response.text();
+        responseData = { error: 'Invalid JSON response', rawText };
+        console.log(`❌ [API Proxy] Raw response text (first 100 chars): ${rawText.substring(0, 100)}`);
+      }
+    } else {
+      // For non-JSON responses, get the text
+      const text = await response.text();
+      responseData = { text };
+      console.log(`ℹ️ [API Proxy] Non-JSON response received: ${text.substring(0, 100)}...`);
     }
     
-    if (!response.ok) {
-      console.error('❌ Backend returned error status:', response.status);
-      console.error('❌ Error response data:', responseData);
-      
-      return res.status(response.status).json({
-        success: false,
-        message: responseData?.message || 'Failed to fetch users',
-        statusCode: response.status,
-        error: responseData
-      });
-    }
-    
-    // Return the response with the same status
-    res.status(response.status).json(responseData);
+    // Return the response to the client
+    console.log(`🔄 [API Proxy] Sending response to client with status: ${response.status}`);
+    return res.status(response.status).json(responseData);
   } catch (error) {
-    console.error('❌ Error proxying users request to backend:', error);
-    
-    res.status(500).json({
-      success: false,
-      message: 'Failed to connect to backend server',
-      error: (error as Error).message
+    console.error('❌ [API Proxy] Error in users proxy:', error);
+    return res.status(500).json({ 
+      error: 'Internal Server Error', 
+      message: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 } 
