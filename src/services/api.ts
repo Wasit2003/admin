@@ -64,20 +64,33 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
     
-    // Ensure URL has the correct format
-    if (config.url && !config.url.startsWith('/api/') && !config.url.startsWith('http')) {
-      // Special handling for settings endpoint which has direct handlers
-      if (config.url === '/admin/settings' || config.url === '/settings') {
-        console.log('🔧 Converting settings URL to use direct handler path');
-        config.url = '/api/admin/settings';
+    // Ensure URL has the correct format and use local proxy
+    if (config.url) {
+      // Extract the endpoint path
+      let endpoint = config.url;
+      
+      // If it's a direct backend URL, convert it to use our local proxy
+      if (endpoint.includes('wasit-backend.onrender.com')) {
+        // Extract the path after /api/admin/
+        const apiPath = endpoint.split('/api/admin/')[1];
+        if (apiPath) {
+          endpoint = `/api/admin/${apiPath}`;
+          console.log(`🔄 Converting direct backend URL to local proxy: ${config.url} -> ${endpoint}`);
+        }
       } 
-      // Convert non-absolute URLs that don't start with /api/
-      else if (config.url.startsWith('/admin/')) {
-        config.url = config.url.replace('/admin/', '/api/admin/');
-      } else if (!config.url.includes('/admin/')) {
-        // Add /api/ prefix to any other URLs that don't have it
-        config.url = `/api${config.url.startsWith('/') ? '' : '/'}${config.url}`;
+      // If it's a relative URL referring to admin endpoints
+      else if (endpoint.startsWith('/admin/')) {
+        endpoint = `/api${endpoint}`;
+        console.log(`🔄 Converting admin path to API path: ${config.url} -> ${endpoint}`);
       }
+      // If it doesn't start with /api/ and isn't an absolute URL, add /api prefix
+      else if (!endpoint.startsWith('/api/') && !endpoint.startsWith('http')) {
+        endpoint = `/api/admin/${endpoint.replace(/^\//, '')}`;
+        console.log(`🔄 Adding API prefix to path: ${config.url} -> ${endpoint}`);
+      }
+      
+      // Use the modified endpoint
+      config.url = endpoint;
     }
     
     // Add timestamp to avoid caching issues
