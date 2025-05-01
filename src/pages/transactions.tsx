@@ -109,15 +109,40 @@ export default function TransactionsPage() {
     .filter((transaction) => transactionType === 'ALL' || transaction.type === transactionType);
 
   const handleViewReceipt = (transaction: Transaction) => {
-    const receiptUrl = `${process.env.NEXT_PUBLIC_API_URL}/uploads/${transaction.receipt}`;
+    // Try to find receipt URL from multiple possible sources
+    let receiptUrl;
+    
+    // Option 1: Direct receipt property
+    if (transaction.receipt) {
+      receiptUrl = `${process.env.NEXT_PUBLIC_API_URL}/uploads/${transaction.receipt}`;
+    } 
+    // Option 2: Check metadata for receiptUrl
+    else if (transaction.metadata && transaction.metadata.receiptUrl) {
+      receiptUrl = transaction.metadata.receiptUrl;
+      
+      // Ensure the URL is properly formatted
+      if (!receiptUrl.startsWith('http') && !receiptUrl.startsWith('/')) {
+        receiptUrl = `/uploads/${receiptUrl}`;
+      }
+      
+      // Add API URL if it's a relative path
+      if (receiptUrl.startsWith('/')) {
+        receiptUrl = `${process.env.NEXT_PUBLIC_API_URL}${receiptUrl}`;
+      }
+    }
     
     // Log for debugging
     console.log('Original Receipt URL:', receiptUrl);
     console.log('Transaction metadata:', transaction.metadata);
     
-    // Don't modify the URL here, let the ReceiptViewer component handle it
-    setSelectedReceipt(receiptUrl);
-    setShowReceiptModal(true);
+    // Proceed only if we found a receipt URL
+    if (receiptUrl) {
+      setSelectedReceipt(receiptUrl);
+      setShowReceiptModal(true);
+    } else {
+      // Show an error if no receipt found
+      alert('No receipt available for this transaction');
+    }
   };
 
   const handleCloseReceipt = () => {

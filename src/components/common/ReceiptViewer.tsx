@@ -9,9 +9,13 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ receiptUrl, onClos
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   // Load the receipt image when the URL changes
   useEffect(() => {
+    setLoading(true);
+    setError(null);
+    
     if (!receiptUrl) {
       setLoading(false);
       setError("No receipt available for this transaction.");
@@ -24,7 +28,8 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ receiptUrl, onClos
       // Check if the URL is a path that needs the backend server hostname prepended
       if (receiptUrl.startsWith('/uploads/')) {
         // Use backend URL instead of current window origin
-        url = new URL(receiptUrl, 'http://localhost:3000');
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+        url = new URL(receiptUrl, baseUrl);
       } else {
         url = new URL(receiptUrl, window.location.origin);
       }
@@ -56,7 +61,7 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ receiptUrl, onClos
       setError(`Invalid receipt URL: ${receiptUrl}`);
       setLoading(false);
     }
-  }, [receiptUrl]);
+  }, [receiptUrl, retryCount]);
 
   // Cleanup effect for the object URL
   useEffect(() => {
@@ -68,6 +73,10 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ receiptUrl, onClos
       }
     };
   }, [imageSrc]);
+
+  const handleRetry = () => {
+    setRetryCount(prev => prev + 1);
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -103,6 +112,12 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ receiptUrl, onClos
               </svg>
               <p className="text-gray-700 dark:text-gray-300 mb-2 font-medium">Receipt Unavailable</p>
               <p className="text-gray-500 dark:text-gray-400 text-sm max-w-sm mx-auto">{error}</p>
+              <button 
+                onClick={handleRetry}
+                className="mt-4 inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-900/30 dark:text-indigo-300"
+              >
+                Retry Loading
+              </button>
             </div>
           )}
           
@@ -111,6 +126,10 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ receiptUrl, onClos
               src={imageSrc} 
               alt="Receipt" 
               className="max-w-full max-h-[70vh] object-contain"
+              onError={() => {
+                setError('Image failed to load. The receipt may be corrupted.');
+                setImageSrc(null);
+              }}
             />
           )}
         </div>
@@ -120,6 +139,8 @@ export const ReceiptViewer: React.FC<ReceiptViewerProps> = ({ receiptUrl, onClos
             <a
               href={receiptUrl}
               download
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
