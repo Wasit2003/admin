@@ -161,18 +161,48 @@ export default function TransactionsPage() {
   const handleDeleteAllTransactions = async () => {
     setIsDeleting(true);
     try {
-      const response = await api.delete('/admin/transactions');
+      console.log('Starting delete all transactions request');
       
-      if (response.data.success) {
+      // Add explicit API URL and content type
+      const response = await api.delete('/admin/transactions', {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        // Send empty object as data to ensure proper content-type
+        data: {}
+      });
+      
+      console.log('Delete response:', response);
+      
+      if (response.data && response.data.success) {
+        console.log('Successfully deleted transactions:', response.data);
         setTransactions([]);
         setError(null);
         setShowDeleteConfirmation(false);
+        // Refresh the transaction list
+        fetchTransactions();
       } else {
-        setError(response.data.message || 'Failed to delete transactions');
+        console.error('Delete failed with response:', response);
+        setError((response.data && response.data.message) || 'Failed to delete transactions');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error deleting transactions:', err);
-      setError('Failed to delete transactions. Please try again.');
+      console.error('Error details:', {
+        message: err.message,
+        response: err.response ? {
+          status: err.response.status,
+          data: err.response.data,
+          headers: err.response.headers
+        } : 'No response',
+        request: err.request ? 'Request was made but no response received' : 'Request was not made'
+      });
+      
+      // Get more detailed error message
+      const errorMessage = err.response && err.response.data && err.response.data.message
+        ? err.response.data.message
+        : err.message || 'Failed to delete transactions. Please try again.';
+        
+      setError(errorMessage);
     } finally {
       setIsDeleting(false);
     }

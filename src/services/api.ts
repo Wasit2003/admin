@@ -116,6 +116,18 @@ api.interceptors.request.use(
       console.log('🔑 Added authorization token to request');
     }
     
+    // Special handling for DELETE requests
+    if (config.method === 'delete') {
+      console.log('📤 Processing DELETE request:', config.url);
+      // Ensure DELETE requests have the proper content type
+      config.headers['Content-Type'] = 'application/json';
+      
+      // Some axios versions require data for DELETE requests to set content-type properly
+      if (!config.data) {
+        config.data = {};
+      }
+    }
+    
     // Force all URLs to go through our local proxies
     if (config.url) {
       // Save original URL for logging
