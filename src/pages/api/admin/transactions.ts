@@ -70,7 +70,12 @@ export default async function handler(
     const response = await fetch(url, {
       method: req.method,
       headers,
-      body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined,
+      body: req.method !== 'GET' && req.method !== 'HEAD' ? 
+        // For DELETE requests, ensure we send a proper empty JSON object if body is empty
+        (req.method === 'DELETE' && (!req.body || Object.keys(req.body).length === 0) ? 
+          JSON.stringify({}) : 
+          JSON.stringify(req.body)
+        ) : undefined,
     });
     
     console.log('🔄 Backend response status:', response.status);
