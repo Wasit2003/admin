@@ -1,9 +1,6 @@
+import React, { useEffect } from 'react';
 import Head from 'next/head';
-import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-
-// Importing the styles
-import '../styles/globals.css';
 
 export default function LandingPage() {
   const router = useRouter();
