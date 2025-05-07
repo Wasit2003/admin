@@ -1,0 +1,514 @@
+/* 
+ * Components CSS
+ * Contains: Buttons, cards, navigation, and other reusable UI components
+ */
+
+/* Header & Navigation */
+header {
+    background: var(--white);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 25px rgba(212, 164, 76, 0.1);
+}
+
+nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.7rem 2rem;
+}
+
+.logo {
+    display: flex;
+    align-items: flex-end;
+    text-decoration: none;
+    position: relative;
+}
+
+.logo-img {
+    height: 50px;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover .logo-img {
+    transform: scale(1.05);
+}
+
+.menu-toggle {
+    display: none;
+    color: var(--primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    order: 3;
+}
+
+.nav-links {
+    display: flex;
+    gap: 3rem;
+    order: 2;
+}
+
+.nav-links a {
+    color: var(--text-dark);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--primary);
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* Buttons */
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    background-color: var(--primary);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.4s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(212, 164, 76, 0.3);
+}
+
+.button:hover {
+    background-color: var(--primary-light);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(212, 164, 76, 0.4);
+}
+
+.button-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}
+
+.button i {
+    font-size: 1.2rem;
+}
+
+.button-container {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.button.button-small {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    min-width: 180px;
+}
+
+/* Cards */
+.card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(212, 164, 76, 0.05);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(to right, var(--primary-light), var(--primary));
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(212, 164, 76, 0.2);
+}
+
+.card:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.card:hover .card-icon {
+    transform: scale(1.1);
+}
+
+.card-title {
+    color: var(--text-dark);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.card-text {
+    color: var(--text-light);
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+/* Section titles */
+.section-title {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.section-title h2 {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+}
+
+.section-title h2::after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 3px;
+    background: linear-gradient(to right, var(--primary-light), var(--primary));
+    bottom: -10px;
+    left: 25%;
+    border-radius: 5px;
+}
+
+/* Feature Points with Icons */
+.feature-point {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    margin-bottom: 0.4rem;
+    width: 100%;
+    position: relative;
+}
+
+.feature-point i {
+    color: var(--primary);
+    font-size: 1.3rem;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.feature-point p {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    margin: 0;
+    text-align: right;
+    width: 100%;
+    padding-right: 2.2rem;
+    line-height: 1.3;
+}
+
+/* Footer */
+footer {
+    background: var(--white);
+    padding: 2rem;
+    text-align: center;
+    border-top: 1px solid rgba(212, 164, 76, 0.1);
+}
+
+footer p {
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+.social-links {
+    margin-top: 1.5rem;
+}
+
+.social-links a {
+    color: var(--primary);
+    font-size: 1.5rem;
+    margin: 0 1rem;
+    transition: all 0.3s ease;
+    opacity: 0.8;
+}
+
+.social-links a:hover {
+    color: var(--primary-light);
+    opacity: 1;
+    transform: translateY(-3px);
+}
+
+/* Mobile Navigation Styles */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-links {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-height: 0;
+        overflow: hidden;
+        flex-direction: column;
+        background: var(--white);
+        padding: 0 2rem;
+        text-align: center;
+        gap: 2rem;
+        transition: all 0.4s ease;
+        z-index: 900;
+        opacity: 0;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-links.active {
+        max-height: 300px;
+        padding: 2rem;
+        opacity: 1;
+    }
+
+    .nav-links a {
+        margin: 10px 0;
+    }
+
+    nav {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 1rem 2rem;
+    }
+
+    .button {
+        padding: 0.8rem 1.5rem;
+        font-size: 1.1rem;
+    }
+
+    .button-large {
+        padding: 0.9rem 1.8rem;
+    }
+    
+    .card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .card-icon {
+        font-size: 2.2rem;
+    }
+    
+    .card-title {
+        font-size: 1.3rem;
+    }
+    
+    .card-text {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-img {
+        width: 70px;
+    }
+
+    .button {
+        padding: 0.7rem 1.3rem;
+        font-size: 0.9rem;
+    }
+    
+    .button-large {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .card {
+        padding: 1.8rem 1.2rem;
+    }
+    
+    .card-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .card-title {
+        font-size: 1.2rem;
+        margin-bottom: 0.7rem;
+    }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 360px) {
+    .logo-img {
+        width: 60px;
+    }
+    
+    nav {
+        padding: 0.8rem 1rem;
+    }
+    
+    .button {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+        min-width: auto;
+    }
+    
+    .button-large {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    
+    .card {
+        padding: 1.5rem 1rem;
+    }
+    
+    .card-icon {
+        font-size: 1.8rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .card-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .card-text {
+        font-size: 0.9rem;
+    }
+    
+    .section-title {
+        margin-bottom: 2.5rem;
+    }
+    
+    .section-title h2 {
+        font-size: 1.5rem;
+    }
+    
+    .feature-point p {
+        font-size: 0.9rem;
+        padding-right: 1.8rem;
+    }
+    
+    .feature-point i {
+        font-size: 1.1rem;
+    }
+    
+    footer {
+        padding: 1.5rem 1rem;
+    }
+    
+    footer p {
+        font-size: 0.9rem;
+    }
+    
+    .social-links a {
+        font-size: 1.3rem;
+        margin: 0 0.7rem;
+    }
+}
+
+/* Extra Small Mobile Devices */
+@media (max-width: 320px) {
+    .logo-img {
+        width: 50px;
+    }
+    
+    nav {
+        padding: 0.6rem 0.8rem;
+    }
+    
+    .nav-links.active {
+        padding: 1.5rem 1rem;
+    }
+    
+    .button {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    
+    .button-large {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .button i {
+        font-size: 1rem;
+    }
+    
+    .card {
+        padding: 1.2rem 0.8rem;
+        border-radius: 15px;
+    }
+    
+    .card-icon {
+        font-size: 1.6rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    .card-title {
+        font-size: 1rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .card-text {
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+    
+    .feature-point p {
+        font-size: 0.85rem;
+        padding-right: 1.6rem;
+    }
+    
+    .feature-point i {
+        font-size: 1rem;
+    }
+    
+    .section-title {
+        margin-bottom: 2rem;
+    }
+    
+    .section-title h2 {
+        font-size: 1.3rem;
+    }
+    
+    .section-title h2::after {
+        height: 2px;
+        bottom: -7px;
+    }
+} 

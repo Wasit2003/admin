@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta name="description" content="شراء وبيع USDT باستخدام وسيط - منصة تبادل العملات الرقمية الرائدة في سوريا">
+    <meta name="keywords" content="وسيط, الشراء والبيع, شراء عملات رقمية, بيع عملات رقمية, USDT, ليرة سورية">
+    <meta name="author" content="وسيط">
+    <meta property="og:title" content="الشراء والبيع | وسيط">
+    <meta property="og:description" content="شراء وبيع USDT باستخدام وسيط - منصة تبادل العملات الرقمية الرائدة في سوريا">
+    <meta property="og:image" content="../assets/images/waseet.png">
+    <meta property="og:url" content="https://waseet.com/guide">
+    <title>الشراء والبيع | وسيط</title>
+    <link rel="icon" type="image/png" href="../assets/images/waseet.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/pages/guide.css">
+    <style>
+        /* Additional styles for crypto.com-like layout */
+        body {
+            background: #fff9f0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            position: relative;
+            z-index: 10;
+            background-color: #fff;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 2rem 3rem;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            background-color: #fff9f0;
+            margin-top: 70px; /* Space for header */
+        }
+        
+        .main-content::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d4a44c' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.7;
+            z-index: -1;
+        }
+        
+        .crypto-container {
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            z-index: 1;
+        }
+        
+        .crypto-content {
+            width: 100%;
+            text-align: center;
+        }
+        
+        .crypto-heading {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.5;
+            padding-bottom: 0.2em;
+        }
+        
+        .crypto-subheading {
+            font-size: 1.4rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+        
+        .download-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.9rem 2.5rem;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 20px rgba(212, 164, 76, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .download-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, var(--primary-light), var(--primary));
+            z-index: -1;
+            transition: opacity 0.5s ease;
+            opacity: 0;
+        }
+        
+        .download-button:hover::before {
+            opacity: 1;
+        }
+        
+        .download-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(212, 164, 76, 0.4);
+        }
+        
+        .download-button i {
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .crypto-heading {
+                font-size: 3rem;
+            }
+            
+            .crypto-subheading {
+                font-size: 1.5rem;
+            }
+            
+            .download-button {
+                padding: 1rem 2rem;
+                font-size: 1.3rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .crypto-heading {
+                font-size: 2.5rem;
+            }
+            
+            .crypto-subheading {
+                font-size: 1.3rem;
+            }
+            
+            .download-button {
+                padding: 1rem 2rem;
+                font-size: 1.2rem;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Price Updates Section Styles */
+        .price-updates-section {
+            padding: 5rem 2rem;
+            background-color: #fff9f0;
+            position: relative;
+            margin-top: 0; /* Remove gap between sections */
+            padding-top: 2rem; /* Add comfortable spacing instead */
+        }
+        
+        .price-updates-section::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d4a44c' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.7;
+            z-index: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .price-updates-content {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+        }
+        
+        .phone-mockup {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .phone-frame {
+            width: 360px;
+            height: 720px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            background-color: transparent;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
+        }
+        
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            border-radius: 0;
+        }
+        
+        /* Phone Screen States */
+        .phone-screen-state {
+            display: none;
+            height: 100%;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .phone-screen-state.active {
+            display: flex;
+        }
+        
+        .phone-screen-state img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .price-display {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .price-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .currency-amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .currency-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .price-chart {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .chart-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(145deg, rgba(212, 164, 76, 0.2) 0%, rgba(212, 164, 76, 0.6) 100%);
+            border-radius: 10px;
+        }
+        
+        .price-stats {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .stat-value {
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .positive {
+            color: #4ade80;
+        }
+        
+        .price-text-content {
+            flex: 1;
+            text-align: right;
+        }
+        
+        .price-heading {
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.5;
+            padding-bottom: 0.2em;
+        }
+        
+        .price-subheading {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 992px) {
+            .price-updates-content {
+                flex-direction: column-reverse;
+            }
+            
+            .price-text-content {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+            
+            .price-heading {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .price-heading {
+                font-size: 1.8rem;
+            }
+            
+            .price-subheading {
+                font-size: 1rem;
+            }
+            
+            .phone-frame {
+                width: 220px;
+                height: 400px;
+            }
+        }
+
+        /* Buy USDT Section Styles */
+        .buy-usdt-section {
+            padding: 5rem 2rem;
+            background-color: #fff9f0;
+            position: relative;
+            padding-top: 2rem;
+        }
+        
+        .buy-usdt-section::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d4a44c' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.7;
+            z-index: 0;
+        }
+        
+        .buy-usdt-content {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+        }
+        
+        .buy-interface {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 10px;
+        }
+        
+        .buy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .back-button {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .screen-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .empty-space {
+            width: 30px;
+        }
+        
+        .amount-input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .currency-selector {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .amount-field {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .price-in-syp {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .payment-method {
+            margin-bottom: 20px;
+        }
+        
+        .payment-title {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .payment-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 15px;
+        }
+        
+        .option-icon {
+            color: var(--primary);
+        }
+        
+        .option-text {
+            flex-grow: 1;
+            text-align: right;
+            margin-right: 10px;
+            font-weight: 500;
+        }
+        
+        .option-select {
+            color: var(--primary);
+        }
+        
+        .buy-button-container {
+            margin-top: auto;
+            padding-top: 20px;
+        }
+        
+        .buy-button {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+        
+        .buy-text-content {
+            flex: 1;
+            text-align: right;
+        }
+        
+        .buy-heading {
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.5;
+            padding-bottom: 0.2em;
+        }
+        
+        .buy-subheading {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 992px) {
+            .buy-usdt-content {
+                flex-direction: column-reverse;
+            }
+            
+            .buy-text-content {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+            
+            .buy-heading {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .buy-heading {
+                font-size: 1.8rem;
+            }
+            
+            .buy-subheading {
+                font-size: 1rem;
+            }
+        }
+
+        /* Sell USDT Section Styles */
+        .sell-usdt-section {
+            padding: 5rem 2rem;
+            background-color: #fff9f0;
+            position: relative;
+            padding-top: 2rem;
+        }
+        
+        .sell-usdt-section::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d4a44c' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.7;
+            z-index: 0;
+        }
+        
+        .sell-usdt-content {
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+        }
+        
+        .sell-interface {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 10px;
+        }
+        
+        .sell-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .sell-balance {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .balance-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+        
+        .balance-amount {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .receive-method {
+            margin-bottom: 20px;
+        }
+        
+        .receive-title {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .receive-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 15px;
+        }
+        
+        .sell-button-container {
+            margin-top: auto;
+            padding-top: 20px;
+        }
+        
+        .sell-button {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+        
+        .sell-text-content {
+            flex: 1;
+            text-align: right;
+        }
+        
+        .sell-heading {
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.5;
+            padding-bottom: 0.2em;
+        }
+        
+        .sell-subheading {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 992px) {
+            .sell-usdt-content {
+                flex-direction: column;
+            }
+            
+            .sell-text-content {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+            
+            .sell-heading {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .sell-heading {
+                font-size: 1.8rem;
+            }
+            
+            .sell-subheading {
+                font-size: 1rem;
+            }
+        }
+
+        /* Quick Confirmation Section Styles */
+        .quick-confirm-section {
+            padding: 5rem 2rem;
+            background-color: #fff9f0;
+            position: relative;
+            padding-top: 2rem;
+        }
+        
+        .quick-confirm-section::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d4a44c' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.7;
+            z-index: 0;
+        }
+        
+        .quick-confirm-content {
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+        }
+        
+        .confirm-interface {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 10px;
+        }
+        
+        .confirmation-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .center-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .confirmation-success {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .success-icon {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .success-message {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .transaction-details {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .item-value {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .confirm-button-container {
+            margin-top: auto;
+        }
+        
+        .confirm-button {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+        
+        .confirm-text-content {
+            flex: 1;
+            text-align: right;
+        }
+        
+        .confirm-heading {
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.5;
+            padding-bottom: 0.2em;
+        }
+        
+        .confirm-subheading {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 992px) {
+            .quick-confirm-content {
+                flex-direction: column;
+            }
+            
+            .confirm-text-content {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+            
+            .confirm-heading {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .confirm-heading {
+                font-size: 1.8rem;
+            }
+            
+            .confirm-subheading {
+                font-size: 1rem;
+            }
+        }
+
+        /* FAQ Section Styles */
+        .page-section.faq-section {
+            padding: 5rem 2rem;
+            background-color: #fff9f0;
+            position: relative;
+            padding-top: 4rem; /* Increased top padding */
+            margin-top: 5rem; /* Increased top margin */
+            position: relative; /* Ensure proper positioning context */
+        }
+        
+        .page-section.faq-section::before {
+            content: '';
+            display: block;
+            height: 2rem; /* Creating additional spacing */
+            width: 100%;
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            background-color: #fff9f0;
+        }
+        
+        .faq-layout {
+            display: flex;
+            flex-direction: row;
+            gap: 4rem;
+            align-items: flex-start;
+            padding-top: 1.5rem; /* Added padding to the top of layout */
+        }
+        
+        .faq-title {
+            width: 25%;
+            text-align: right;
+            position: relative; /* Changed from sticky to relative by default */
+            top: 0;
+            margin-bottom: 2rem; /* Added margin */
+        }
+        
+        .faq-title h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem; /* Added more bottom margin */
+            position: relative;
+            display: inline-block;
+        }
+        
+        .faq-title h2::after {
+            content: '';
+            position: absolute;
+            width: 70%;
+            height: 3px;
+            background: var(--primary);
+            bottom: -10px;
+            right: 0;
+            border-radius: 5px;
+        }
+        
+        .faq-container {
+            width: 75%;
+            max-width: 700px;
+            text-align: right;
+        }
+        
+        .faq-item {
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1rem;
+            overflow: hidden;
+            border: 1px solid rgba(212, 164, 76, 0.1);
+        }
+        
+        .faq-item:hover {
+            box-shadow: 0 10px 20px rgba(212, 164, 76, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .faq-question h3 {
+            font-size: 1.1rem;
+            margin: 0;
+            color: var(--text-dark);
+            font-weight: 600;
+            pointer-events: none;
+        }
+        
+        .faq-toggle {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-width: 24px !important;
+            min-height: 24px !important;
+            color: var(--primary) !important;
+            pointer-events: none;
+        }
+        
+        .faq-toggle i {
+            transition: transform 0.3s ease;
+            font-size: 16px;
+            display: block;
+            width: 16px;
+            height: 16px;
+            text-align: center;
+            line-height: 16px;
+            pointer-events: none;
+        }
+        
+        .faq-item.active .faq-toggle i.fa-plus {
+            transform: rotate(135deg);
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, padding 0.3s ease, opacity 0.3s ease;
+            padding: 0 1.5rem;
+            opacity: 0;
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 0 1.5rem 1.5rem;
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .faq-answer p {
+            color: var(--text-light);
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+        
+        .faq-item.active .faq-question {
+            background: linear-gradient(to right, var(--white), rgba(212, 164, 76, 0.05));
+        }
+        
+        @media (min-width: 993px) {
+            .faq-title {
+                position: sticky;
+                top: 120px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .faq-layout {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .faq-title, 
+            .faq-container {
+                width: 100%;
+                max-width: 700px;
+                margin: 0 auto;
+            }
+            
+            .faq-title {
+                text-align: center;
+                margin-bottom: 3rem; /* Increased bottom margin */
+            }
+            
+            .faq-title h2 {
+                margin-bottom: 2rem; /* Increased bottom margin */
+            }
+            
+            .faq-title h2::after {
+                left: 15%;
+                width: 70%;
+            }
+            
+            .page-section.faq-section {
+                padding-top: 3rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .faq-question h3 {
+                font-size: 1rem;
+            }
+            
+            .faq-question, 
+            .faq-answer {
+                padding: 1rem 1.2rem;
+            }
+            
+            .faq-item.active .faq-answer {
+                padding: 0 1.2rem 1rem;
+            }
+            
+            .faq-answer p {
+                font-size: 0.95rem;
+            }
+            
+            .faq-title {
+                margin-bottom: 2.5rem;
+            }
+            
+            .page-section.faq-section {
+                margin-top: 4rem;
+                padding-top: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .faq-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .page-section.faq-section {
+                padding: 3rem 1rem;
+                margin-top: 3rem;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .faq-title h2 {
+                font-size: 1.6rem;
+            }
+            
+            .page-section.faq-section {
+                padding: 2.5rem 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="../index.html" class="logo">
+                <img src="../assets/images/waseet.png" alt="وسيط" class="logo-img">
+                <img src="../assets/images/Flag_of_Syria_(2025-).svg.png" alt="علم سوريا" class="flag-img">
+            </a>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="nav-links">
+                <a href="../index.html">الصفة الرئيسية</a>
+                <a href="guide.html">الشراء والبيع</a>
+                <a href="about.html">من نحن</a>
+            </div>
+        </nav>
+    </header>
+    <!-- Hero Section (Top of Page, below header) -->
+    <section class="guide-hero-section" style="width:100%;background:var(--bg-gradient-1);padding:7rem 0 2.5rem 0;text-align:center;">
+        <h1 style="font-size:2.7rem;color:var(--primary);font-weight:800;margin-bottom:1.2rem;">شراء وبيع USDT باستخدام وسيط</h1>
+        <p style="font-size:1.3rem;color:var(--text-light);margin-bottom:2.2rem;">استمتع بتجربة سريعة لشراء وبيع USDT عبر وسيط، مع أسعار محدثة بشكل مستمر.</p>
+        <a href="#download" class="download-button">
+            <i class="fas fa-download"></i>
+            تحميل التطبيق
+        </a>
+    </section>
+
+    <!-- Sticky Phone Animation Section -->
+    <section class="sticky-phone-container" style="padding-top: 4rem; padding-bottom: 4rem;">
+        <div class="sticky-phone-wrapper">
+            <!-- Text Content Column -->
+            <div class="sticky-phone-text">
+                <div class="sticky-phone-text-step" data-step="1">
+                    <h3>تابع أحدث أسعار USDT لحظة بلحظة</h3>
+                    <p style="font-size:1.2rem; color:var(--text-light); margin-bottom:2rem;">كن على علم بتقلبات الأسعار لتحقق أقصى استفادة من فرص الصرف</p>
+                </div>
+                <div class="sticky-phone-text-step" data-step="2">
+                    <h3>اشترِ USDT بأعلى درجات الأمان</h3>
+                    <p style="font-size:1.2rem; color:var(--text-light);">قم بتحديد المبلغ الذي ترغب في شرائه لتتمكن من الحصول على USDT</p>
+                </div>
+                <div class="sticky-phone-text-step" data-step="3">
+                    <h3>قم ببيع USDT في أي وقت وبالمبلغ الذي تختاره</h3>
+                    <p style="font-size:1.2rem; color:var(--text-light);">اختر المبلغ الذي ترغب في بيعه، واتبع خطوات بسيطة لإتمام المعاملة بكل شفافية وأمان.</p>
+                </div>
+                <div class="sticky-phone-text-step" data-step="4">
+                    <h3>تأكيد فوري، بدون تأخير</h3>
+                    <p style="font-size:1.2rem; color:var(--text-light);">نؤمن بالسرعة في التنفيذ. كل طلب يتم مراجعته وتأكيده بسرعة لضمان إتمام المعاملة بأسرع وقت ممكن.</p>
+                </div>
+            </div>
+            
+            <!-- Phone Mockup Column -->
+            <div class="sticky-phone-mockup">
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <!-- Phone Screen States -->
+                        <div class="phone-screen-state" data-step="1">
+                            <img src="../assets/images/first-page.png" alt="تابع أحدث أسعار USDT">
+                        </div>
+                        
+                        <div class="phone-screen-state" data-step="2">
+                            <img src="../assets/images/second-page.png" alt="اشترِ USDT بسهولة">
+                        </div>
+                        
+                        <div class="phone-screen-state" data-step="3">
+                            <img src="../assets/images/third-page.png" alt="بيع USDT بسهولة">
+                        </div>
+                        
+                        <div class="phone-screen-state" data-step="4">
+                            <img src="../assets/images/fourth-page.png" alt="تأكيد سريع">
+                        </div>
+                        
+                        <div class="phone-screen-state" data-step="5">
+                            <img src="../assets/images/first-page.png" alt="تابع أحدث أسعار USDT">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="page-section faq-section" id="faq">
+        <div class="container">
+            <div class="faq-layout">
+                <div class="faq-title">
+                    <h2>الأسئلة الشائعة</h2>
+                </div>
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>هل يوجد دعم إذا واجهتني مشكلة؟</h3>
+                            <span class="faq-toggle"><i class="fas fa-plus"></i></span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>نعم، نحن هنا لمساعدتك! يمكنك التواصل مع فريق الدعم عبر <a href="https://wa.me/963936674009" target="_blank">WhatsApp</a> لحل أي مشكلة.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>هل هناك تأخير في تأكيد المعاملات؟</h3>
+                            <span class="faq-toggle"><i class="fas fa-plus"></i></span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>لا يوجد تأخير في تأكيد المعاملات. في معظم الحالات، يتم تأكيد الطلبات خلال دقيقة واحدة أو أقل، مما يضمن سرعة التنفيذ وإنجاز المعاملة بسرعة.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>ما هي بوابات الدفع المتاحة؟</h3>
+                            <span class="faq-toggle"><i class="fas fa-plus"></i></span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>حالياً، نستخدم بوابات دفع "الهرم" و"الفؤاد" لإتمام المعاملات. سنضيف المزيد من بوابات الدفع قريباً لتوفير مزيد من الخيارات للمستخدمين.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>جميع الحقوق محفوظة © 2025 وسيط</p>
+        <div class="social-links">
+            <a href="https://wa.me/963936674009" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/guide.js"></script>
+</body>
+</html>

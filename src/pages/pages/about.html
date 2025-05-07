@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="تعرف على وسيط - خدمة تبادل العملات الرقمية الرائدة في سوريا">
+    <meta name="keywords" content="وسيط, من نحن, عن الشركة, عملات رقمية, سوريا">
+    <meta name="author" content="وسيط">
+    <meta property="og:title" content="من نحن | وسيط">
+    <meta property="og:description" content="تعرف على وسيط - خدمة تبادل العملات الرقمية الرائدة في سوريا">
+    <meta property="og:image" content="../assets/images/waseet.png">
+    <meta property="og:url" content="https://waseet.com/about">
+    <title>من نحن | وسيط</title>
+    <link rel="icon" type="image/png" href="../assets/images/waseet.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #fff9f0, #f8eed2);
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+            margin: 0;
+        }
+        
+        header {
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(212, 164, 76, 0.1);
+            position: relative;
+            z-index: 100;
+        }
+        
+        main {
+            flex: 1 0 auto;
+            padding-top: 0;
+            background-image: radial-gradient(rgba(212, 164, 76, 0.05) 2px, transparent 2px);
+            background-size: 20px 20px;
+        }
+
+        .section {
+            padding: 40px 0;
+            position: relative;
+            background: var(--bg-color);
+        }
+        
+        .section:not(:first-child) {
+            padding-top: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .about-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 70px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .about-content {
+            flex: 0 0 50%;
+            order: 1; /* Content on the left */
+        }
+        
+        .about-logo {
+            flex: 0 0 40%;
+            text-align: center;
+            order: 2; /* Logo on the right */
+        }
+        
+        .about-logo img {
+            max-width: 100%;
+            height: auto;
+            filter: drop-shadow(0 10px 25px rgba(212, 164, 76, 0.2));
+            transition: transform 0.5s ease;
+        }
+        
+        .about-logo img:hover {
+            transform: scale(1.05);
+        }
+        
+        .section-heading {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #7d533f;
+            display: inline-block;
+            position: relative;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .section-heading::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, #e2b971, #d4a44c);
+            border-radius: 2px;
+        }
+        
+        .section-content {
+            color: #3a2a1d;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin: 30px auto 60px;
+            max-width: 900px;
+            text-align: center;
+        }
+        
+        .about-heading {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #7d533f, #d4a44c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .about-heading::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            right: 0; /* Changed from left to right for RTL */
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, #e2b971, #d4a44c);
+            border-radius: 2px;
+        }
+        
+        .about-subheading {
+            color: #3a2a1d;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            padding-right: 20px;
+            border-right: 3px solid rgba(212, 164, 76, 0.3);
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        
+        .page-header {
+            text-align: center;
+            padding: 60px 0 20px;
+            position: relative;
+            margin-top: 0;
+            background: var(--bg-color);
+        }
+        
+        .page-header h1 {
+            font-size: 2.8rem;
+            color: #7d533f;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+            margin: 0;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .page-header h1::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, #e2b971, #d4a44c);
+            border-radius: 2px;
+        }
+        
+        /* Vision Section Styles */
+        .vision-section {
+            padding: 80px 0;
+            background-color: var(--bg-color);
+        }
+        
+        .vision-heading {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
+        .vision-heading h2 {
+            font-size: 3rem;
+            color: #7d533f;
+            display: inline-block;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .vision-heading h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, #e2b971, #d4a44c);
+            border-radius: 2px;
+        }
+        
+        .vision-container {
+            display: flex;
+            flex-direction: row;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            align-items: stretch;
+        }
+        
+        .vision-tabs {
+            flex: 0 0 35%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .vision-tab {
+            padding: 20px 30px;
+            font-size: 1.3rem;
+            color: #7d6e61;
+            text-align: right;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            font-weight: 500;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.04);
+            border-radius: 0px 8px 8px 0px;
+            background: rgba(255, 255, 255, 0.5);
+            overflow: hidden;
+        }
+        
+        .vision-tab:hover {
+            transform: translateX(-5px);
+        }
+        
+        .vision-tab.active {
+            color: #7d533f;
+            background: linear-gradient(to left, rgba(255, 255, 255, 0.9), rgba(228, 207, 177, 0.3));
+            font-weight: 700;
+        }
+        
+        .vision-tab.active::before {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(to bottom, #d4a44c, #7d533f);
+            border-radius: 0;
+        }
+        
+        .vision-tab::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #d4a44c);
+            transition: width 0.3s ease;
+        }
+        
+        .vision-tab:hover::after {
+            width: 100%;
+        }
+        
+        .vision-content {
+            flex: 0 0 65%;
+            padding: 50px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+            border-radius: 15px 0 0 15px;
+            box-shadow: 0 10px 30px rgba(212, 164, 76, 0.1);
+        }
+        
+        .vision-item {
+            display: none;
+        }
+        
+        .vision-item.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .vision-item h3 {
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            color: #d4a44c;
+            position: relative;
+            display: inline-block;
+            font-weight: bold;
+        }
+        
+        .vision-item h3::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            right: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(to right, #e2b971, #d4a44c);
+            border-radius: 2px;
+        }
+        
+        .vision-item p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #3a2a1d;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        footer {
+            background: #ffffff;
+            border-top: 1px solid rgba(212, 164, 76, 0.1);
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 -4px 25px rgba(212, 164, 76, 0.1);
+            position: relative;
+            width: 100%;
+            margin-top: auto;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+        
+        footer p {
+            color: #7d6e61;
+            margin-bottom: 10px;
+        }
+        
+        .social-links a {
+            color: #d4a44c;
+            font-size: 24px;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: #e2b971;
+        }
+        
+        @media (max-width: 992px) {
+            .about-container {
+                flex-direction: column-reverse;
+                gap: 50px;
+            }
+            
+            .about-logo, .about-content {
+                flex: 0 0 100%;
+            }
+            
+            .about-logo {
+                margin-bottom: 30px;
+            }
+            
+            .about-heading {
+                font-size: 2.5rem;
+            }
+            
+            .section-heading {
+                font-size: 2.5rem;
+            }
+            
+            .page-header {
+                padding: 70px 0 30px;
+            }
+            
+            .page-header h1 {
+                font-size: 2.4rem;
+            }
+            
+            .section {
+                padding: 30px 0;
+            }
+            
+            .vision-container {
+                flex-direction: column-reverse;
+            }
+            
+            .vision-tabs, .vision-content {
+                flex: 0 0 100%;
+            }
+            
+            .vision-content {
+                padding: 30px;
+                border-radius: 15px 15px 0 0;
+            }
+            
+            .vision-tabs {
+                gap: 10px;
+                margin-top: 0;
+            }
+            
+            .vision-tab {
+                border-radius: 0 0 8px 8px;
+                text-align: center;
+                padding: 15px;
+            }
+            
+            .vision-tab.active::before {
+                right: 0;
+                top: 0;
+                width: 100%;
+                height: 4px;
+            }
+            
+            .vision-tab:hover {
+                transform: translateY(0);
+            }
+        }
+        
+        /* Contact Section */
+        .contact-cards {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(212, 164, 76, 0.1);
+            text-align: center;
+            min-width: 220px;
+            flex: 1;
+            max-width: 280px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(212, 164, 76, 0.2);
+        }
+        
+        .contact-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .contact-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+        
+        .contact-card p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .contact-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .contact-card {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="../index.html" class="logo">
+                <img src="../assets/images/waseet.png" alt="وسيط" class="logo-img">
+                <img src="../assets/images/Flag_of_Syria_(2025-).svg.png" alt="علم سوريا" class="flag-img">
+            </a>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="nav-links">
+                <a href="../index.html">الصفة الرئيسية</a>
+                <a href="guide.html">الشراء والبيع</a>
+                <a href="about.html">من نحن</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+    <!-- Page Header -->
+        <section class="page-header">
+        <div class="container">
+            <h1>من نحن</h1>
+        </div>
+    </section>
+
+    <!-- About Section -->
+        <section class="section">
+            <div class="about-container">
+            <div class="about-content">
+                    <h1 class="about-heading">عن وسيط</h1>
+                    <div class="about-subheading">
+                        وسيط هي أول منصة لتبادل USDT في سوريا، وتوفر طريقة موثوقة وآمنة لشراء وبيع العملة بسهولة
+                        <br><br>
+                        رؤيتنا تتمحور حول تمكين الأفراد من الوصول السريع إلى العملات الرقمية دون تعقيد، مع تجربة خالية من التأخير وبأسعار تُعد الأرخص في السوق. 
+                        <br><br>
+                        نركز على السرعة في التنفيذ، الشفافية في الأسعار، والدقة في المعاملات، ونعمل باستمرار على تطوير خدماتنا وتوسيع خيارات الدفع لتلبية احتياجات السوق المحلي.
+                    </div>
+                </div>
+                <div class="about-logo">
+                    <img src="../assets/images/waseet.png" alt="وسيط" />
+                </div>
+            </div>
+        </section>
+
+        <!-- Vision Section (Interactive) -->
+        <section class="vision-section">
+            <div class="vision-heading">
+                <h2>رؤيتنا</h2>
+            </div>
+            <div class="vision-container">
+                <div class="vision-content">
+                    <div class="vision-item active" id="vision-1">
+                        <h3>الوصول السلس</h3>
+                        <p>نسعى في WASET لتمكين الجميع في سوريا من الوصول السلس والسريع إلى العملات الرقمية، وجعل استخدام USDT جزءاً من الحياة اليومية بطريقة بسيطة وآمنة.</p>
+                    </div>
+                    <div class="vision-item" id="vision-2">
+                        <h3>التفكير الواضح</h3>
+                        <p>نتبنى منهجية واضحة في رؤيتنا لمستقبل التعاملات المالية الرقمية في سوريا، مع الحرص على فهم احتياجات السوق وتطلعات عملائنا.</p>
+                    </div>
+                    <div class="vision-item" id="vision-3">
+                        <h3>الابتكار المستمر</h3>
+                        <p>نؤمن بضرورة تطوير حلول مبتكرة تواكب التطورات السريعة في عالم العملات الرقمية، مع الحفاظ على سهولة الاستخدام والأمان.</p>
+                    </div>
+                    <div class="vision-item" id="vision-4">
+                        <h3>الدعم والإرشاد</h3>
+                        <p>نهدف إلى توفير الدعم الكامل للمستخدمين الجدد في عالم العملات الرقمية، ونعمل على نشر الوعي والثقافة المالية الرقمية في المجتمع السوري.</p>
+                    </div>
+                    <div class="vision-item" id="vision-5">
+                        <h3>الأمان والموثوقية</h3>
+                        <p>نضع أمان وحماية أموال عملائنا في مقدمة أولوياتنا، ونسعى لبناء منصة آمنة وموثوقة تحظى بثقة المستخدمين على المدى الطويل.</p>
+                    </div>
+                </div>
+                <div class="vision-tabs">
+                    <div class="vision-tab active" data-target="vision-1">الوصول السلس</div>
+                    <div class="vision-tab" data-target="vision-2">التفكير الواضح</div>
+                    <div class="vision-tab" data-target="vision-3">الابتكار المستمر</div>
+                    <div class="vision-tab" data-target="vision-4">الدعم والإرشاد</div>
+                    <div class="vision-tab" data-target="vision-5">الأمان والموثوقية</div>
+            </div>
+        </div>
+    </section>
+
+        <!-- Mission Section -->
+        <section class="section">
+        <div class="container">
+                <h2 class="section-heading">مهمتنا</h2>
+                <p class="section-content">
+                    تسريع اعتماد العملات الرقمية في سوريا من خلال منصة توفر تجربة خالية من التعقيد، وبأسعار تنافسية، وبمستوى عالٍ من الثقة والشفافية.
+                </p>
+        </div>
+    </section>
+
+        <!-- Contact Section -->
+        <section class="section">
+            <div class="container">
+                <h2 class="section-heading">تواصل معنا</h2>
+                <div class="contact-cards">
+                    <div class="contact-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>العنوان</h3>
+                        <p>دمشق، سوريا</p>
+                    </div>
+                    <div class="contact-card">
+                        <i class="fab fa-whatsapp"></i>
+                        <h3>واتساب</h3>
+                        <p dir="ltr">+963 936 674 009</p>
+                    </div>
+                    <div class="contact-card">
+                        <i class="fas fa-phone"></i>
+                        <h3>رقم الهاتف</h3>
+                        <p dir="ltr">+963 936 674 009</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>جميع الحقوق محفوظة © 2025 وسيط</p>
+        <div class="social-links">
+            <a href="https://wa.me/963936674009" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="../assets/js/main.js"></script>
+    <script>
+        // Vision tabs functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const visionTabs = document.querySelectorAll('.vision-tab');
+            const visionItems = document.querySelectorAll('.vision-item');
+            
+            visionTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs and items
+                    visionTabs.forEach(t => t.classList.remove('active'));
+                    visionItems.forEach(item => item.classList.remove('active'));
+                    
+                    // Add active class to current tab
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    const target = this.getAttribute('data-target');
+                    document.getElementById(target).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

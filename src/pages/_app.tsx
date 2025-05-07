@@ -1,9 +1,9 @@
-import "../styles/globals.css";
-import type { AppProps } from "next/app";
+import '../styles/globals.css';
+import type { AppProps } from 'next/app';
 import { AuthProvider } from '../components/features/auth/AuthProvider';
 import { ThemeProvider } from '../components/features/theme/ThemeProvider';
 
-export default function App({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider>
       <AuthProvider>
@@ -12,3 +12,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </ThemeProvider>
   );
 }
+
+export default MyApp;
