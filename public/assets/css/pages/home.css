@@ -1,0 +1,735 @@
+/* 
+ * Home Page Specific Styles
+ */
+
+/* Hero Section */
+.hero {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    position: relative;
+    overflow: hidden;
+    padding-top: 7rem;
+    padding-bottom: 1rem;
+}
+
+.hero-content {
+    text-align: center;
+    max-width: 800px;
+    position: relative;
+    z-index: 1;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 1rem;
+    margin-top: 1.5rem;
+}
+
+.hero-content h1 {
+    font-size: 3.8rem;
+    margin-bottom: 0.8rem;
+    background: linear-gradient(to right, var(--secondary), var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 1.2;
+}
+
+.hero-content .primary-text {
+    color: var(--primary);
+    -webkit-text-fill-color: var(--primary);
+    font-weight: 800;
+}
+
+.hero-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-light);
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.hero-features {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    padding-right: 10px;
+}
+
+.hero-features .feature-point {
+    margin-bottom: 0.5rem;
+}
+
+.hero .button-container {
+    margin-top: 1.8rem;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.hero .button-large {
+    min-width: 280px;
+}
+
+/* Phone Animation Section */
+.phone-animation-section {
+    position: relative;
+    padding: 0 0 3rem;
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    margin-bottom: 2rem;
+    margin-top: 0;
+}
+
+.phone-container {
+    position: relative;
+    height: 700px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -3rem;
+}
+
+.phone-wrapper {
+    position: relative;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    width: 350px;
+    margin: 0 auto;
+    margin-top: -2rem;
+}
+
+.phone-image {
+    position: relative;
+    width: 100%;
+    transform-origin: center center;
+    transition: transform 0.5s ease;
+    will-change: transform;
+}
+
+.phone-screen {
+    width: 100%;
+    height: auto;
+    display: block;
+    box-shadow: none;
+    border-radius: 40px;
+}
+
+/* Phone Placeholder Styles */
+.phone-placeholder {
+    width: 300px;
+    height: 600px;
+    background-color: #121212;
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border: 8px solid #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    color: white;
+    font-family: 'Tajawal', sans-serif;
+}
+
+.placeholder-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    text-align: left;
+    direction: ltr;
+}
+
+.balance {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: white;
+}
+
+.profit {
+    font-size: 1.2rem;
+    color: #4CD964;
+    margin-bottom: 40px;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.action-button {
+    width: 60px;
+    height: 60px;
+    background-color: #0078FF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 4px 10px rgba(0, 120, 255, 0.3);
+}
+
+.crypto-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.crypto-item {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.crypto-name {
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.crypto-price {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.crypto-change {
+    color: #4CD964;
+    font-size: 0.9rem;
+}
+
+/* Features Section */
+.features-section {
+    padding: 3rem 2rem 10rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    padding-top: 3rem;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.section-title h2 {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+}
+
+.section-title h2::after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 3px;
+    background: linear-gradient(to right, var(--primary-light), var(--primary));
+    bottom: -10px;
+    left: 25%;
+    border-radius: 5px;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+    margin-top: 2rem;
+}
+
+/* Download Section */
+.download-section {
+    padding: 6rem 2rem;
+    position: relative;
+    /* Remove gradient background to maintain seamless transition */
+    /* background: linear-gradient(135deg, rgba(212, 164, 76, 0.1) 0%, rgba(255, 249, 240, 0.1) 100%); */
+    overflow: hidden;
+}
+
+.download-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.download-content h2 {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+}
+
+.download-content p {
+    color: var(--text-light);
+    font-size: 1.2rem;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.download-content .button {
+    min-width: 280px;
+}
+
+/* Contact Section */
+.contact-section {
+    padding: 6rem 2rem;
+    text-align: center;
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.contact-grid {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    margin-top: 4rem;
+    flex-wrap: wrap;
+}
+
+.contact-item {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 3rem;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    border: 1px solid rgba(212, 164, 76, 0.1);
+    transition: all 0.3s ease;
+}
+
+.contact-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(212, 164, 76, 0.2);
+}
+
+.contact-item i {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.contact-item:hover i {
+    transform: scale(1.1);
+}
+
+.contact-item h3 {
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.contact-item p {
+    color: var(--text-light);
+    line-height: 1.6;
+    font-size: 1.2rem;
+}
+
+.whatsapp-number {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.whatsapp-number:hover {
+    color: var(--primary-light);
+}
+
+/* Phone Frame Styles */
+.phone-frame {
+    width: 100%;
+    height: auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 40px;
+    /* Remove any potential border lines */
+    background-color: transparent;
+    /* Remove shadow */
+    box-shadow: none;
+    /* Prevent any potential line artifacts */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+/* App Screenshot Styles */
+.app-screenshot {
+    width: 100%;
+    height: auto;
+    display: block;
+    transform-origin: center center;
+    transition: transform 0.5s ease;
+    will-change: transform;
+    border: none;
+    object-fit: contain;
+    overflow: hidden;
+    background-color: transparent;
+    /* Prevent any potential line artifacts */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+
+/* Responsive Styles for Home Page */
+@media (max-width: 768px) {
+    .hero-content {
+        max-width: 90%;
+    }
+
+    .hero-content h1 {
+        font-size: 3rem;
+    }
+
+    .hero-content h2 {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .hero-features {
+        gap: 0;
+        margin-bottom: 2rem;
+    }
+    
+    .features-section, 
+    .download-section, 
+    .contact-section {
+        padding: 4rem 1.5rem;
+    }
+
+    .section-title h2, 
+    .download-content h2, 
+    .contact-section h2 {
+        font-size: 2rem;
+    }
+
+    .contact-item {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    /* Adjust phone positioning for tablet */
+    .phone-container {
+        height: 600px;
+        margin-top: -2rem; /* Adjusted from -3rem to -2rem */
+    }
+    
+    .phone-wrapper {
+        width: 300px;
+        margin-top: -1rem; /* Adjusted from -2rem to -1rem */
+    }
+    
+    .phone-placeholder {
+        width: 250px;
+        height: 500px;
+    }
+    
+    .balance {
+        font-size: 2rem;
+    }
+    
+    .action-button {
+        width: 50px;
+        height: 50px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-content h2 {
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero-features {
+        gap: 0;
+        margin-bottom: 1.5rem;
+    }
+    
+    .section-title h2, 
+    .download-content h2, 
+    .contact-section h2 {
+        font-size: 1.8rem;
+    }
+    
+    /* Improve mobile phone positioning */
+    .phone-animation-section {
+        margin-top: -2rem; /* Pull entire section up on mobile */
+        min-height: 30vh; /* Reduced height for mobile */
+    }
+    
+    .phone-container {
+        height: 500px;
+        margin-top: 1rem; /* Changed to positive margin for mobile */
+    }
+    
+    .phone-wrapper {
+        width: 250px;
+        margin-top: 0; /* Reset negative margin for mobile */
+    }
+    
+    .phone-placeholder {
+        width: 200px;
+        height: 400px;
+        padding: 15px;
+        border-width: 6px;
+    }
+    
+    .placeholder-content {
+        padding: 20px 10px;
+    }
+    
+    .balance {
+        font-size: 1.6rem;
+        margin-bottom: 3px;
+    }
+    
+    .profit {
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+    
+    .action-buttons {
+        margin-bottom: 20px;
+    }
+    
+    .action-button {
+        width: 40px;
+        height: 40px;
+        font-size: 0.7rem;
+    }
+    
+    .crypto-list {
+        gap: 10px;
+    }
+    
+    .crypto-item {
+        padding: 10px;
+    }
+    
+    .crypto-name {
+        font-size: 0.9rem;
+    }
+    
+    .crypto-price {
+        font-size: 1.1rem;
+    }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 360px) {
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .hero-content h2 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-features {
+        margin-bottom: 1.2rem;
+    }
+    
+    .feature-point p {
+        font-size: 0.9rem;
+    }
+    
+    .hero .button-container {
+        margin-top: 1.5rem;
+    }
+    
+    .phone-animation-section {
+        margin-top: -1rem;
+        min-height: 25vh;
+        padding: 0.5rem;
+    }
+    
+    .phone-container {
+        height: 450px;
+        transform: scale(0.85);
+    }
+    
+    .phone-wrapper {
+        width: 220px;
+    }
+    
+    .section-title h2, 
+    .download-content h2, 
+    .contact-section h2 {
+        font-size: 1.5rem;
+    }
+    
+    .download-content p {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .features {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .contact-item {
+        padding: 2rem 1.5rem;
+    }
+    
+    .contact-item h3 {
+        font-size: 1.2rem;
+    }
+    
+    .contact-item p {
+        font-size: 1rem;
+    }
+    
+    .whatsapp-number {
+        font-size: 1rem;
+    }
+    
+    /* Fix app image display on tiny screens */
+    .app-screenshot {
+        max-width: 100%;
+        transform: scale(0.95);
+    }
+    
+    /* Adjust wasit-pitch section */
+    .wasit-pitch-content {
+        gap: 2rem;
+    }
+    
+    .wasit-pitch-text h2 {
+        font-size: 1.8rem;
+    }
+    
+    .wasit-pitch-text p {
+        font-size: 1rem;
+    }
+}
+
+/* Extra Small Mobile Devices */
+@media (max-width: 320px) {
+    .hero-content h1 {
+        font-size: 1.7rem;
+    }
+
+    .hero-content h2 {
+        font-size: 1rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .hero-features {
+        margin-bottom: 1rem;
+    }
+    
+    .feature-point {
+        margin-bottom: 0.2rem;
+    }
+    
+    .feature-point p {
+        font-size: 0.85rem;
+    }
+    
+    .hero .button-container {
+        margin-top: 1.2rem;
+    }
+    
+    .phone-animation-section {
+        margin-top: -0.5rem;
+        min-height: 20vh;
+        padding: 0.3rem;
+    }
+    
+    .phone-container {
+        height: 400px;
+        transform: scale(0.8);
+    }
+    
+    .phone-wrapper {
+        width: 200px;
+    }
+    
+    .section-title h2, 
+    .download-content h2, 
+    .contact-section h2 {
+        font-size: 1.3rem;
+    }
+    
+    .download-content p {
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .features {
+        gap: 1.2rem;
+    }
+    
+    .app-screenshot {
+        transform: scale(0.9);
+    }
+    
+    .wasit-pitch-content {
+        gap: 1.5rem;
+    }
+    
+    .wasit-pitch-text h2 {
+        font-size: 1.6rem;
+    }
+    
+    .wasit-pitch-text p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+    
+    .wasit-pitch-cta {
+        gap: 1rem;
+    }
+    
+    .discover-link {
+        font-size: 0.9rem;
+    }
+} 

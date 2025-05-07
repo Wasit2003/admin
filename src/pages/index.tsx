@@ -6,45 +6,38 @@ export default function LandingPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Load the script from the static HTML
-    const script = document.createElement('script');
-    script.innerHTML = `
-      document.addEventListener('DOMContentLoaded', function() {
-        // FAQ Toggles
-        const faqItems = document.querySelectorAll('.faq-item');
-        faqItems.forEach(item => {
-            const question = item.querySelector('.faq-question');
-            question.addEventListener('click', () => {
-                item.classList.toggle('active');
-                const icon = item.querySelector('.faq-toggle i');
-                if (item.classList.contains('active')) {
-                    icon.classList.remove('fa-plus');
-                    icon.classList.add('fa-minus');
-                } else {
-                    icon.classList.remove('fa-minus');
-                    icon.classList.add('fa-plus');
-                }
-            });
+    // This code will only run in the browser, not during server-side rendering
+    // FAQ Toggles
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+      const question = item.querySelector('.faq-question');
+      if (question) {
+        question.addEventListener('click', () => {
+          item.classList.toggle('active');
+          const icon = item.querySelector('.faq-toggle i');
+          if (icon) {
+            if (item.classList.contains('active')) {
+              icon.classList.remove('fa-plus');
+              icon.classList.add('fa-minus');
+            } else {
+              icon.classList.remove('fa-minus');
+              icon.classList.add('fa-plus');
+            }
+          }
         });
+      }
+    });
 
-        // Mobile menu toggle
-        const menuToggle = document.querySelector('.menu-toggle');
-        const navLinks = document.querySelector('.nav-links');
-        
-        if (menuToggle && navLinks) {
-            menuToggle.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
-            });
-        }
+    // Mobile menu toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (menuToggle && navLinks) {
+      menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
       });
-    `;
-    document.body.appendChild(script);
-
-    // Clean up function
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
+    }
+  }, []); // Empty dependency array means this runs once after component mounts
 
   return (
     <div className="rtl-container">
@@ -62,6 +55,8 @@ export default function LandingPage() {
         <link rel="icon" type="image/png" href="/assets/images/waseet.png" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
         <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet" />
+        {/* Add a script tag for the client-side JS */}
+        <script src="/assets/js/main.js" async></script>
       </Head>
 
       {/* Header */}

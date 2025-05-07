@@ -1,0 +1,12 @@
+This file should contain a mobile app screenshot showing:
+
+1. A dark themed crypto app interface
+2. Main balance displayed as €15,790 EUR
+3. A profit/gain indicator showing +3.28% (or +€368)
+4. Navigation buttons for Buy, Sell, Deposit, Pay
+5. A favorites/watchlist section showing:
+   - Bitcoin (BTC): €61,642.31, +1.98%
+   - Ethereum (ETH): €3,042.31, +2.82%
+   - Other cryptocurrencies
+
+This is similar to the phone images shown in the crypto.com examples provided by the user. 
