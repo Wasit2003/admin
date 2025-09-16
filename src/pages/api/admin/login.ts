@@ -50,7 +50,7 @@ export default async function handler(
     const response = await fetch(targetUrl, {
       method: 'POST',
       headers,
-      body: JSON.stringify(req.body),
+      body: JSON.stringify({ phoneNumber: req.body.email, password: req.body.password }),
     });
     
     console.log('🔄 Backend login response status:', response.status);
